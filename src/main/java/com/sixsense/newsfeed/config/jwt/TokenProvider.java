@@ -1,4 +1,4 @@
-package com.sixsense.newsfeed.config;
+package com.sixsense.newsfeed.config.jwt;
 
 import com.sixsense.newsfeed.domain.User;
 import io.jsonwebtoken.Claims;
