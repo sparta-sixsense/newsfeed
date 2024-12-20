@@ -1,4 +1,4 @@
-package com.sixsense.newsfeed.config;
+package com.sixsense.newsfeed.config.jwt;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
