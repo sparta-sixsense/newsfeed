@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 // example
-public record CreateUserRequestDto(
+public record SignUpRequestDto(
         @NotBlank @Email String email,
         @NotBlank @Size(min = 6) String password,
         @NotBlank String name,
