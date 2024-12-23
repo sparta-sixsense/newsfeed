@@ -23,12 +23,10 @@ public class TokenProvider {
     }
 
     private String makeToken(Date expiration, User user) {
-        Date now = new Date();
-
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setIssuer(jwtProperties.getIssuer())
-                .setIssuedAt(now)
+                .setIssuedAt(new Date())
                 .setExpiration(expiration)
                 .setSubject(user.getEmail())
                 .claim("id", user.getId())
@@ -38,12 +36,30 @@ public class TokenProvider {
 
     public boolean isValidToken(String token) {
         try {
-            return getClaims(token)
-                    .getExpiration()
-                    .after(new Date());
+            Jwts.parser()
+                    .setSigningKey(jwtProperties.getSecretKey()) // 비밀키로 복호화
+                    .parseClaimsJws(token);
         } catch (Exception e) {
             return false;
         }
+
+        return true;
+    }
+
+    public boolean isExpiredToken(String token) {
+        if (!isValidToken(token)) {
+            return false;
+        }
+
+        Date now = new Date();
+        return getClaims(token)
+                .getExpiration()
+                .before(now);
+    }
+
+    public Long getUserId(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("id", Long.class);
     }
 
     private Claims getClaims(String token) {

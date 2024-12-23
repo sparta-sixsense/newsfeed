@@ -42,6 +42,7 @@ dependencies {
 
     // DB connector
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+    runtimeOnly("mysql:mysql-connector-java:8.0.32") // '8.0.40'으로 맞추면 에러...
 
     // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

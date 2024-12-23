@@ -9,8 +9,7 @@ public class ConflictException extends BusinessBaseException {
         super(errorCode);
     }
 
-    public ConflictException() {
-        super(ErrorCode.CONFLICT);
+    public ConflictException(String message, ErrorCode errorCode) {
+        super(message, errorCode);
     }
-
 }
