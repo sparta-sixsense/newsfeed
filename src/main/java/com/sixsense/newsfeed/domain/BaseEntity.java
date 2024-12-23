@@ -28,8 +28,4 @@ public abstract class BaseEntity {
     @Enumerated(EnumType.STRING)
     protected Status status;
 
-    public enum Status {
-        ACTIVE,
-        INACTIVE
-    }
 }
