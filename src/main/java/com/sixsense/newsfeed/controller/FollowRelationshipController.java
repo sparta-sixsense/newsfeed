@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+import static com.sixsense.newsfeed.constant.Token.AUTHORIZATION_HEADER;
+
 
 @RestController
 @RequestMapping("/users/{user_id}/follows")
@@ -18,14 +22,22 @@ public class FollowRelationshipController {
 
     // 팔로우 생성 API
     @PostMapping
-    public ResponseEntity<Void> createFollow(@PathVariable("user_id") Long userId, @RequestBody FollowRequestDto req) {
-        followRelationshipService.createFollow(userId, req);
+    public ResponseEntity<Void> createFollow(@PathVariable("user_id") Long userId,
+                                             @RequestHeader(AUTHORIZATION_HEADER) String accessToken,
+                                             @RequestBody FollowRequestDto req) {
+        followRelationshipService.createFollow(userId, req, accessToken);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    // 팔로워 목록 조회 API 나를 팔로우 하는 친구들 목록 조회
+    @GetMapping("/followers")
+    public ResponseEntity<List<FollowResponseDto>> getFollowerList(@PathVariable("user_id") Long userId,
+                                                                   @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
+        followRelationshipService.getFollowerList(userId, accessToken);
 
-    // 팔로워 목록 조회 API
-
+        List<FollowResponseDto> followerList = followRelationshipService.getFollowerList(userId, accessToken);
+        return new ResponseEntity<>(followerList, HttpStatus.OK);
+    }
 
     // 팔로잉 목록 조회 API
 

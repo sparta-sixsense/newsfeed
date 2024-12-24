@@ -1,7 +1,9 @@
 package com.sixsense.newsfeed.service;
+import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.FollowRelationship;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.FollowRequestDto;
+import com.sixsense.newsfeed.dto.FollowResponseDto;
 import com.sixsense.newsfeed.error.exception.UserNotFoundException;
 import com.sixsense.newsfeed.error.exception.base.InvalidValueException;
 import com.sixsense.newsfeed.repository.FollowRelationshipRepository;
@@ -9,6 +11,11 @@ import com.sixsense.newsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+/**
+ * TODO 팔로우 관게 예외를 따로 만들기!
+ */
 
 @Service
 @RequiredArgsConstructor
@@ -16,9 +23,12 @@ public class FollowRelationshipService {
 
     private final FollowRelationshipRepository followRelationshipRepository;
     private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
 
     // 팔로우 생성 ( following 기능 )
-    public void createFollow(Long userId, FollowRequestDto requestDto) {
+    public void createFollow(Long userId, FollowRequestDto requestDto, String accessToken) {
+        Long tokenId = tokenProvider.getUserId(accessToken);
+
         User follower = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -37,8 +47,20 @@ public class FollowRelationshipService {
 
         followRelationshipRepository.save(new FollowRelationship(follower, following));
     }
-    // 팔로워 목록 조회 (나를 팔로우 하는 목록)
 
+    // 팔로워 목록 조회 (나를 팔로우 하는 목록)
+    public List<FollowResponseDto> getFollowerList(Long userId, String accessToken) {
+        Long tokenId = tokenProvider.getUserId(accessToken);
+
+        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowingId(userId);
+        return relationships.stream()
+                .map(relationship -> new FollowResponseDto(
+                        relationship.getFollower().getId(),
+                        relationship.getFollower().getEmail(),
+                        relationship.getFollower().getName()
+                ))
+                .toList();
+    }
 
     // 팔로잉 목록 조회 (내가 팔로우 하는 목록)
 
