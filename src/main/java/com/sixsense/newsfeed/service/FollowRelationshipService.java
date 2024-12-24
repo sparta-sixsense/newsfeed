@@ -9,15 +9,16 @@ import com.sixsense.newsfeed.error.exception.base.InvalidValueException;
 import com.sixsense.newsfeed.repository.FollowRelationshipRepository;
 import com.sixsense.newsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * TODO 팔로우 관게 예외를 따로 만들기!
- * 커밋 테스트입니다.
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FollowRelationshipService {
@@ -28,6 +29,7 @@ public class FollowRelationshipService {
 
     // 팔로우 생성 ( following 기능 )
     public void createFollow(Long userId, FollowRequestDto requestDto, String accessToken) {
+        log.info("accessToken: {}", accessToken);
         Long tokenId = tokenProvider.getUserId(accessToken);
 
         User follower = userRepository.findById(userId)
@@ -78,6 +80,7 @@ public class FollowRelationshipService {
     }
 
     // 팔로우 삭제 (unfollow)
+
 }
 
 
