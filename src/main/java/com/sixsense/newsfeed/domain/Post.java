@@ -24,4 +24,16 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    public Post(String content, String imgUrl, User user){
+        this.content = content;
+        this.imgUrl = imgUrl;
+        this.user = user;
+        status = Status.ACTIVE;
+    }
+
+    public void update(String content, String imgUrl) {
+        this.content = content;
+        this.imgUrl = imgUrl;
+    }
 }
