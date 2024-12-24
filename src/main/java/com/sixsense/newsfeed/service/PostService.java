@@ -6,6 +6,9 @@ import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.CreatePostRequestDto;
 import com.sixsense.newsfeed.dto.PostResponseDto;
 import com.sixsense.newsfeed.dto.UpdatePostRequestDto;
+import com.sixsense.newsfeed.error.ErrorCode;
+import com.sixsense.newsfeed.error.exception.base.AccessDeniedException;
+import com.sixsense.newsfeed.error.exception.base.NotFoundException;
 import com.sixsense.newsfeed.repository.PostRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +26,7 @@ public class PostService {
 
     // 게시글 생성
     public PostResponseDto createPost(CreatePostRequestDto dto, String token) {
-        Long userId = tokenProvider.getUserId(extractToken(token));
+        Long userId = tokenProvider.getUserId(token);
         User currentUser = userService.getById(userId);
 
         // 게시글 생성
@@ -32,7 +35,7 @@ public class PostService {
     }
 
     public List<PostResponseDto> findAllMyPosts(String token) {
-        Long userId = tokenProvider.getUserId(extractToken(token));
+        Long userId = tokenProvider.getUserId(token);
         return postRepository.findAllByUserId(userId)
                 .stream()
                 .map(PostResponseDto::fromEntity)
@@ -55,7 +58,7 @@ public class PostService {
                                   @Valid UpdatePostRequestDto requestDto,
                                   String token) {
 
-        Long userId = tokenProvider.getUserId(extractToken(token));
+        Long userId = tokenProvider.getUserId(token);
 //        User currentUser = userService.getById(userId);
 
         Post post = postRepository.findById(id)
@@ -80,7 +83,7 @@ public class PostService {
     }
 
     public void delete(Long id, String token) {
-        Long userId = tokenProvider.getUserId(extractToken(token));
+        Long userId = tokenProvider.getUserId(token);
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("삭제 할 피드가 존재하지 않습니다."));
@@ -92,13 +95,5 @@ public class PostService {
         // 3. 게시글 삭제
         postRepository.delete(post);
     }
-
-    private String extractToken(String authorizationHeader) {
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
-        }
-        throw new IllegalArgumentException("Invalid Authorization header format");
-    }
-
 
 }
