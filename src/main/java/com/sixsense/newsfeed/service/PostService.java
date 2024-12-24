@@ -10,12 +10,10 @@ import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.error.exception.base.AccessDeniedException;
 import com.sixsense.newsfeed.error.exception.base.NotFoundException;
 import com.sixsense.newsfeed.repository.PostRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,19 +32,17 @@ public class PostService {
         return PostResponseDto.fromEntity(createdPost);
     }
 
-    public List<PostResponseDto> findAllMyPosts(String token) {
+    public Page<PostResponseDto> findAllMyPosts(String token, Pageable pageable) {
         Long userId = tokenProvider.getUserId(token);
-        return postRepository.findAllByUserId(userId)
-                .stream()
-                .map(PostResponseDto::fromEntity)
-                .collect(Collectors.toList());
+
+        return postRepository.findAllByUserId(userId, pageable)
+                .map(PostResponseDto::fromEntity);
     }
 
-    public List<PostResponseDto> findAll() {
-        return postRepository.findAllByOrderByUpdatedAtDesc()
-                .stream()
-                .map(PostResponseDto::fromEntity)
-                .toList();
+    public Page<PostResponseDto> findAll(Pageable pageable) {
+
+        return postRepository.findAllByOrderByUpdatedAtDesc(pageable)
+                .map(PostResponseDto::fromEntity);
     }
 
     public PostResponseDto findById(Long id) {
@@ -56,7 +52,7 @@ public class PostService {
     }
 
     public PostResponseDto update(Long id,
-                                  @Valid UpdatePostRequestDto requestDto,
+                                  UpdatePostRequestDto requestDto,
                                   String token) {
 
         Long userId = tokenProvider.getUserId(token);
@@ -69,7 +65,7 @@ public class PostService {
             throw new AccessDeniedException(ErrorCode.POST_ACCESS_DENIED);
         }
 
-        post.update(requestDto.getContent(),requestDto.getImgUrl());
+        post.update(requestDto.getContent(), requestDto.getImgUrl());
 
         postRepository.save(post);
 

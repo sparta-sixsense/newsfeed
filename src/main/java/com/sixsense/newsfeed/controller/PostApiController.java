@@ -6,11 +6,12 @@ import com.sixsense.newsfeed.dto.UpdatePostRequestDto;
 import com.sixsense.newsfeed.service.PostService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -28,16 +29,23 @@ public class PostApiController {
     }
 
     @GetMapping("/my-posts")
-    public ResponseEntity<List<PostResponseDto>> findAllMyPosts(
-            @RequestHeader("Authorization") String token) { // 토큰 추가
-        List<PostResponseDto> allMyPosts = postService.findAllMyPosts(token);
-        return new ResponseEntity<>(allMyPosts, HttpStatus.OK);
+    public ResponseEntity<Page<PostResponseDto>> findAllMyPosts(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<PostResponseDto> allMyPosts = postService.findAllMyPosts(token, pageable);
+        return ResponseEntity.ok(allMyPosts);
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponseDto>> findAll(){
-        List<PostResponseDto> findAll = postService.findAll();
-        return new ResponseEntity<>(findAll, HttpStatus.OK);
+    public ResponseEntity<Page<PostResponseDto>> findAll(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        Pageable pageable = PageRequest.of(page - 1 , size);
+        Page<PostResponseDto> findAll = postService.findAll(pageable);
+        return ResponseEntity.ok(findAll);
     }
 
     @GetMapping("/{id}")
