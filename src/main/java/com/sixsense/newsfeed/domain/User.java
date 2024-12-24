@@ -2,6 +2,7 @@ package com.sixsense.newsfeed.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,8 +31,6 @@ public class User extends BaseEntity {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-<<<<<<< Updated upstream
-=======
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -46,5 +45,4 @@ public class User extends BaseEntity {
         this.age = age;
         status = Status.ACTIVE;
     }
->>>>>>> Stashed changes
 }
