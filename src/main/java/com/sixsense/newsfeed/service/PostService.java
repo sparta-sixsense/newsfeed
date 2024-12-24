@@ -89,8 +89,9 @@ public class PostService {
             throw new AccessDeniedException(ErrorCode.POST_ACCESS_DENIED);
         }
 
-        // 3. 게시글 삭제
-        postRepository.delete(post);
+        post.deactive();
+
+        postRepository.save(post);
     }
 
 }
