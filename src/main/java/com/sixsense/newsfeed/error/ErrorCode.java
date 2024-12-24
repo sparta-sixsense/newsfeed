@@ -26,6 +26,8 @@ public enum ErrorCode {
     // Post
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "P4", "존재하지 않는 게시글입니다."),
     POST_ACCESS_DENIED(HttpStatus.FORBIDDEN, "P6", "사용자가 이 게시글에 접근할 권한이 없습니다."),
+    POST_ALREADY_INACTIVE(HttpStatus.CONFLICT, "P7", "이미 비활성화된 게시글 입니다."),
+    POST_ALREADY_ACTIVE(HttpStatus.CONFLICT, "P8", "이미 활성화된 게시글입니다."),
 
     // Comment
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C4", "존재하지 않는 댓글입니다."),
