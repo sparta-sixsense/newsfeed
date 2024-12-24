@@ -26,8 +26,4 @@ public abstract class BaseEntity {
 
     // status 컬럼은 각 엔티티의 기능에 맞는 status로써 활용하기 위해 BaseEntity 에서 제외하고 각 entity 에 따로 추가했습니다.
 
-    public enum Status {
-        ACTIVE,
-        INACTIVE
-    }
 }

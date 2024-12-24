@@ -36,4 +36,11 @@ out/
 ### VS Code ###
 .vscode/
 .idea
-/src/main/resources/application.yml
+
+# Spring application configuration files
+#/src/main/resources/application-dev.yml
+#/src/main/resources/application.yml
+#/src/main/resources/application.properties
+
+/src/main/resources/application*.yml
+/src/main/resources/application*.properties

@@ -9,4 +9,5 @@ public class UserConflictException extends ConflictException {
     public UserConflictException() {
         super(ErrorCode.USER_CONFLICT);
     }
+
 }

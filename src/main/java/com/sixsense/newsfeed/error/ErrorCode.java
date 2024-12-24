@@ -14,13 +14,14 @@ public enum ErrorCode {
     CONFLICT(HttpStatus.CONFLICT, "E5", "이미 존재하는 엔티티입니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "E6", "접근 권한이 없습니다."),
 
-    // User
+    // User (이건 3개를 하나로 만들어도 될 것 같다. 굳이 이렇게 세분화할 필요가 있는가...)
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U4", "존재하지 않는 유저입니다."),
     USER_CONFLICT(HttpStatus.CONFLICT, "U5", "이미 존재하는 유저입니다."),
+    AUTHENTICATION_FAILURE(HttpStatus.UNAUTHORIZED, "U6", "비밀번호가 일치하지 않습니다."),
 
     // Token
-    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "T1", "유효하지 않은 토큰입니다."),
-    TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "T4", "존재하지 않는 토큰입니다"),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "T1", "유효하지 않은 토큰입니다."),
+    TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "T4", "존재하지 않는 토큰입니다"),
 
     // Schedule
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "S4", "존재하지 않는 일정입니다."),
