@@ -41,7 +41,11 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // DB connector
+<<<<<<< Updated upstream
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+=======
+    runtimeOnly("mysql:mysql-connector-java:8.0.32") // '8.0.40'으로 맞추면 에러...
+>>>>>>> Stashed changes
 
     // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

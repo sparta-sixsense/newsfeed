@@ -16,16 +16,29 @@ public class FollowRelationship extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    // follower 팔로우를 요청한 사용자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User follower;
 
+    // following 팔로우를 받는 대상 사용자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_id", nullable = false)
-    private User friend;
+    private User following;
 
-    public FollowRelationship(User user, User friend) {
-        this.user = user;
-        this.friend = friend;
+    @Column(name = "relationship_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    // 팔로우 관계 생성 시 기본 상태 ACTIVE
+    public FollowRelationship(User follower, User following) {
+        this.follower = follower;
+        this.following = following;
+        this.status = Status.ACTIVE;
+    }
+
+    // 팔로우 상태 변경 메서드
+    public void changeStatus(Status newStatus) {
+        status = newStatus;
     }
 }

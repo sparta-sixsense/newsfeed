@@ -30,4 +30,21 @@ public class User extends BaseEntity {
     @Column(name = "age", nullable = false)
     private Integer age;
 
+<<<<<<< Updated upstream
+=======
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+
+    @Builder
+    public User(String email, String password, String name, String address, Integer age) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.address = address;
+        this.age = age;
+        status = Status.ACTIVE;
+    }
+>>>>>>> Stashed changes
 }
