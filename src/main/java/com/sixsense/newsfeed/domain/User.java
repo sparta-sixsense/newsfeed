@@ -29,6 +29,10 @@ public class User extends BaseEntity {
     @Column(name = "age")
     private Integer age;
 
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @Builder
     public User(String email, String password, String name, String address, Integer age) {
         this.email = email;

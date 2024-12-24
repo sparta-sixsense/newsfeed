@@ -8,11 +8,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Date;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenProvider {
@@ -65,9 +67,10 @@ public class TokenProvider {
     }
 
     private Claims getClaims(String token) {
+        //String testToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzaXhzZW5zZUBnbWFpbC5jb20iLCJpYXQiOjE3MzUwMzk0NDEsImV4cCI6MTczNTA0NjY0MSwic3ViIjoidGVzdDFAZ21haWwuY29tIiwiaWQiOjF9.KGPwI0Ak0TaXLJjxJCfpTmer8_-0naPatEfB0XWKXSc";
         return Jwts.parser()
                 .setSigningKey(jwtProperties.getSecretKey())
-                .parseClaimsJws(token)
+                .parseClaimsJws(token) // 토큰값만 들어가야 하는데 bearer 라는 문자열도 같이 들어감
                 .getBody();
     }
 

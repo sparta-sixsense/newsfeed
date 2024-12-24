@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(name = "post")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
@@ -26,6 +27,10 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     public Post(String content, String imgUrl, User user){
         this.content = content;

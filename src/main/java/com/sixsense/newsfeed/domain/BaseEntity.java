@@ -24,8 +24,6 @@ public abstract class BaseEntity {
     @Column(name = "updated_at", nullable = false)
     protected LocalDateTime updatedAt;
 
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    protected Status status;
+    // status 컬럼은 각 엔티티의 기능에 맞는 status로써 활용하기 위해 BaseEntity 에서 제외하고 각 entity 에 따로 추가했습니다.
 
 }
