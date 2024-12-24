@@ -29,7 +29,7 @@ public class FollowRelationshipController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // 팔로워 목록 조회 API 나를 팔로우 하는 친구들 목록 조회
+    // 팔로워 목록 조회 API
     @GetMapping("/followers")
     public ResponseEntity<List<FollowResponseDto>> getFollowerList(@PathVariable("user_id") Long userId,
                                                                    @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
@@ -40,6 +40,14 @@ public class FollowRelationshipController {
     }
 
     // 팔로잉 목록 조회 API
+    @GetMapping("/followings")
+    public ResponseEntity<List<FollowResponseDto>> getFollowingList(@PathVariable("user_id") Long userId,
+                                                                    @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
+        followRelationshipService.getFollowingList(userId, accessToken);
+
+        List<FollowResponseDto> followingList = followRelationshipService.getFollowingList(userId, accessToken);
+        return new ResponseEntity<>(followingList, HttpStatus.OK);
+    }
 
     // 팔로우 삭제 (언팔로우) API
 

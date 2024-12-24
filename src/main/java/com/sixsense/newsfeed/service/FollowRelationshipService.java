@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * TODO 팔로우 관게 예외를 따로 만들기!
+ * 커밋 테스트입니다.
  */
 
 @Service
@@ -63,7 +64,18 @@ public class FollowRelationshipService {
     }
 
     // 팔로잉 목록 조회 (내가 팔로우 하는 목록)
+    public List<FollowResponseDto> getFollowingList(Long userId, String accessToken) {
+        Long tokenId = tokenProvider.getUserId(accessToken);
 
+        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowerId(userId);
+        return relationships.stream()
+                .map(relationship -> new FollowResponseDto(
+                        relationship.getFollowing().getId(),
+                        relationship.getFollowing().getEmail(),
+                        relationship.getFollowing().getName()
+                ))
+                .toList();
+    }
 
     // 팔로우 삭제 (unfollow)
 }
