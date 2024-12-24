@@ -1,10 +1,12 @@
 package com.sixsense.newsfeed.config.jwt;
 
 import com.sixsense.newsfeed.domain.User;
+import com.sixsense.newsfeed.constant.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,4 +70,14 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    // 요청 헤더에서 토큰 추출
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(Token.AUTHORIZATION_HEADER); // 상수 사용
+        if (bearerToken != null && bearerToken.startsWith(Token.BEARER_PREFIX)) {
+            return bearerToken.substring(Token.BEARER_PREFIX.length()); // 접두어 제거
+        }
+        return null;
+    }
 }
+
