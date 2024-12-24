@@ -23,9 +23,11 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "T1", "유효하지 않은 토큰입니다."),
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "T4", "존재하지 않는 토큰입니다"),
 
-    // Schedule
-    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "S4", "존재하지 않는 일정입니다."),
-    SCHEDULE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "S6", "해당 일정에 대한 접근 권한이 없습니다."),
+    // Post
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "P4", "존재하지 않는 게시글입니다."),
+    POST_ACCESS_DENIED(HttpStatus.FORBIDDEN, "P6", "사용자가 이 게시글에 접근할 권한이 없습니다."),
+    POST_ALREADY_INACTIVE(HttpStatus.CONFLICT, "P7", "이미 비활성화된 게시글 입니다."),
+    POST_ALREADY_ACTIVE(HttpStatus.CONFLICT, "P8", "이미 활성화된 게시글입니다."),
 
     // Comment
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C4", "존재하지 않는 댓글입니다."),
