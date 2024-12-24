@@ -10,6 +10,7 @@ import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.error.exception.base.AccessDeniedException;
 import com.sixsense.newsfeed.error.exception.base.NotFoundException;
 import com.sixsense.newsfeed.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ public class PostService {
     private final TokenProvider tokenProvider;
     private final PostRepository postRepository;
 
+    @Transactional
     // 게시글 생성
     public PostResponseDto createPost(CreatePostRequestDto dto, String token) {
         Long userId = tokenProvider.getUserId(token);
