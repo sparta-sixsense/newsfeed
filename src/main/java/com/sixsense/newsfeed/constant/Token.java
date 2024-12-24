@@ -12,5 +12,6 @@ public class Token {
     public static final String BEARER_PREFIX = "Bearer ";
 
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(3);
-    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2);
+//    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2);
+public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(2);
 }

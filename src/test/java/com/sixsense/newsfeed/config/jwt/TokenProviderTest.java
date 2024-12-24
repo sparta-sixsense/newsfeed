@@ -114,4 +114,10 @@ class TokenProviderTest {
         assertThat(expired.before(new Date())).isTrue();
         assertThat(valid.after(new Date())).isTrue();
     }
+
+    @Test
+    void test() {
+        String encode = passwordEncoder.encode("123");
+        System.out.println(encode);
+    }
 }

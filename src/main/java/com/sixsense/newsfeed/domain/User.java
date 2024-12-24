@@ -1,5 +1,6 @@
 package com.sixsense.newsfeed.domain;
 
+import com.sixsense.newsfeed.dto.UpdateUserRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -39,5 +40,17 @@ public class User extends BaseEntity {
         this.address = address;
         this.age = age;
         status = Status.ACTIVE;
+    }
+
+    public void update(UpdateUserRequestDto requestDto, String encodedPassword) {
+        this.name = requestDto.name();
+        this.password = encodedPassword;
+        this.address = requestDto.address();
+        this.age = requestDto.age();
+    }
+
+    public void deleteMe() {
+        // Soft deletion
+        status = Status.DELETED;
     }
 }

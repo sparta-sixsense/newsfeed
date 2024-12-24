@@ -16,8 +16,10 @@ public enum ErrorCode {
 
     // User (이건 3개를 하나로 만들어도 될 것 같다. 굳이 이렇게 세분화할 필요가 있는가...)
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U4", "존재하지 않는 유저입니다."),
+    USER_INACTIVE(HttpStatus.FORBIDDEN, "U6", "비활성화된 계정입니다."),
     USER_CONFLICT(HttpStatus.CONFLICT, "U5", "이미 존재하는 유저입니다."),
-    AUTHENTICATION_FAILURE(HttpStatus.UNAUTHORIZED, "U6", "비밀번호가 일치하지 않습니다."),
+    USER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "U6", "접근 권한이 없습니다."),
+    AUTHENTICATION_FAILURE(HttpStatus.UNAUTHORIZED, "U8", "비밀번호가 일치하지 않습니다."),
 
     // Token
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "T1", "유효하지 않은 토큰입니다."),

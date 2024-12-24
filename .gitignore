@@ -37,10 +37,6 @@ out/
 .vscode/
 .idea
 
-# Spring application configuration files
-#/src/main/resources/application-dev.yml
-#/src/main/resources/application.yml
-#/src/main/resources/application.properties
-
-/src/main/resources/application*.yml
-/src/main/resources/application*.properties
+application*.yml
+application*.properties
+*.sql
