@@ -1,8 +1,5 @@
 package com.sixsense.newsfeed.dto;
 
-<<<<<<< HEAD
-public record SignUpResponseDto() {
-=======
 import com.sixsense.newsfeed.domain.User;
 
 public record SignUpResponseDto(
@@ -22,5 +19,4 @@ public record SignUpResponseDto(
                 user.getAddress()
         );
     }
->>>>>>> main
 }

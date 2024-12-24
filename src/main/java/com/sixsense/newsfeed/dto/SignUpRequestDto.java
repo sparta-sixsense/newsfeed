@@ -1,24 +1,9 @@
 package com.sixsense.newsfeed.dto;
 
-<<<<<<< HEAD
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
-// example
-public record SignUpRequestDto(
-        @NotBlank @Email String email,
-        @NotBlank @Size(min = 6) String password,
-        @NotBlank String name,
-        @NotBlank String address,
-        @NotNull Integer age
-) {
-
-=======
 import com.sixsense.newsfeed.domain.User;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 // example
@@ -40,7 +25,6 @@ public record SignUpRequestDto(
                 message = "이름은 영문자, 한글만 사용 가능하며 2자에서 12자 사이여야 합니다."
         )
         String name,
-
         String address,
         Integer age
 ) {
@@ -54,5 +38,4 @@ public record SignUpRequestDto(
                 .age(age)
                 .build();
     }
->>>>>>> main
 }

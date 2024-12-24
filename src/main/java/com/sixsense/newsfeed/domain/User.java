@@ -31,14 +31,10 @@ public class User extends BaseEntity {
     @Column(name = "age")
     private Integer age;
 
-<<<<<<< HEAD
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
-
-=======
->>>>>>> main
     @Builder
     public User(String email, String password, String name, String address, Integer age) {
         this.email = email;
