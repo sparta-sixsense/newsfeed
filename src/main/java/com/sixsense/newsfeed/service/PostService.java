@@ -50,8 +50,9 @@ public class PostService {
     }
 
     public PostResponseDto findById(Long id) {
-        Post findPost = postRepository.findByIdOrElseThrow(id);
-        return new PostResponseDto(findPost.getId(),findPost.getUser().getId(),findPost.getUser().getName(),findPost.getContent(),findPost.getImgUrl(),findPost.getUpdatedAt());
+        Post findPost = postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        return PostResponseDto.fromEntity(findPost);
     }
 
     public PostResponseDto update(Long id,
@@ -62,10 +63,10 @@ public class PostService {
 //        User currentUser = userService.getById(userId);
 
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("피드가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("사용자가 이 게시글을 수정할 권한이 없습니다.");
+            throw new AccessDeniedException(ErrorCode.POST_ACCESS_DENIED);
         }
 
         post.update(requestDto.getContent(),requestDto.getImgUrl());
@@ -86,10 +87,10 @@ public class PostService {
         Long userId = tokenProvider.getUserId(token);
 
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("삭제 할 피드가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("사용자가 이 게시글을 삭제할 권한이 없습니다.");
+            throw new AccessDeniedException(ErrorCode.POST_ACCESS_DENIED);
         }
 
         // 3. 게시글 삭제
