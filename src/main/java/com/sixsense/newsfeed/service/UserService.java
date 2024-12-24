@@ -7,9 +7,12 @@ import com.sixsense.newsfeed.dto.LoginRequestDto;
 import com.sixsense.newsfeed.dto.LoginResponseDto;
 import com.sixsense.newsfeed.dto.SignUpRequestDto;
 import com.sixsense.newsfeed.dto.SignUpResponseDto;
+import com.sixsense.newsfeed.dto.ProfileResponseDto;
+import com.sixsense.newsfeed.dto.ProfileUpdateRequestDto;
 import com.sixsense.newsfeed.error.exception.AuthenticationException;
 import com.sixsense.newsfeed.error.exception.UserConflictException;
 import com.sixsense.newsfeed.error.exception.UserNotFoundException;
+import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -63,4 +66,48 @@ public class UserService {
         String refreshToken = tokenProvider.generateToken(findUser, REFRESH_TOKEN_DURATION);
         return new LoginResponseDto(findUser.getId(), accessToken, refreshToken);
     }
+
+
+
+    public ProfileResponseDto getProfile(String token) {
+        // 1. 토큰에서 사용자 ID 추출
+        Long userId = tokenProvider.getUserId(token);
+
+        // 2. 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        // 3. ProfileResponseDto 생성
+        return ProfileResponseDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .age(user.getAge())
+                .address(user.getAddress())
+                .build();
+    }
+
+
+    public void updateProfile(String token, ProfileUpdateRequestDto dto) {
+        // 1. 토큰에서 사용자 ID 추출
+        Long userId = tokenProvider.getUserId(token);
+
+        // 2. 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        // 3. 비밀번호 검증
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new AuthenticationException(ErrorCode.AUTHENTICATION_FAILURE);
+        }
+
+        // 4. 프로필 정보 업데이트
+        if (dto.getName() != null) user.setName(dto.getName());
+        if (dto.getAge() != null) user.setAge(dto.getAge());
+        if (dto.getAddress() != null) user.setAddress(dto.getAddress());
+
+        // 5. 변경 사항 저장
+        userRepository.save(user);
+    }
+
+
 }

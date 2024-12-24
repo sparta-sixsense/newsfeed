@@ -1,1 +1,22 @@
-spring.application.name=newsfeed
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost:3306/sixsence"
+    username: "root"
+    password: "0515"
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create
+
+jwt:
+  issuer: sixsense@gmail.com
+  secret-key: sixsense-newsfeed
