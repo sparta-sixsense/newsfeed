@@ -89,7 +89,7 @@ public class FollowRelationshipService {
                 .orElseThrow(UserNotFoundException::new);
 
         //팔로우 관계가 존재하는지 확인
-        FollowRelationship relationship = followRelationshipRepository.findByFollowersAndFollowings(follower, following)
+        FollowRelationship relationship = followRelationshipRepository.findByFollowerAndFollowing(follower, following)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.FOLLOW_RELATION_NOT_FOUND));
 
         relationship.inactive();
