@@ -26,12 +26,19 @@ public class FollowRelationship extends BaseEntity {
     @JoinColumn(name = "friend_id", nullable = false)
     private User following;
 
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     // 팔로우 관계 생성 시 기본 상태 ACTIVE
     public FollowRelationship(User follower, User following) {
         this.follower = follower;
         this.following = following;
+        status = Status.ACTIVE;
     }
 
     // 팔로우 상태 변경 메서드
-    // boolean 소프트 딜리트 ...
+    public void inactive() {
+        status = Status.INACTIVE;
+    }
 }

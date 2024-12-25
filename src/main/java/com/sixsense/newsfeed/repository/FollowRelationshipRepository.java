@@ -5,6 +5,7 @@ import com.sixsense.newsfeed.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FollowRelationshipRepository extends JpaRepository<FollowRelationship, Long> {
 
@@ -18,5 +19,6 @@ public interface FollowRelationshipRepository extends JpaRepository<FollowRelati
     List<FollowRelationship> findAllByFollowerId(Long userId);
 
     // 팔로우 삭제
+    Optional<FollowRelationship> findByFollowersAndFollowings(User follower, User following);
 
 }
