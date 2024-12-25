@@ -19,6 +19,6 @@ public interface FollowRelationshipRepository extends JpaRepository<FollowRelati
     List<FollowRelationship> findAllByFollowerId(Long userId);
 
     // 팔로우 삭제
-    Optional<FollowRelationship> findByFollowersAndFollowings(User follower, User following);
+    Optional<FollowRelationship> findByFollowerAndFollowing(User follower, User following);
 
 }
