@@ -24,4 +24,8 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private Status status;
 }
