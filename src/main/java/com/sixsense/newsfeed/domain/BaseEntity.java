@@ -25,7 +25,7 @@ public abstract class BaseEntity {
     protected LocalDateTime updatedAt;
 
     @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     protected Status status;
 
 }

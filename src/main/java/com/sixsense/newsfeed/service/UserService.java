@@ -2,12 +2,10 @@ package com.sixsense.newsfeed.service;
 
 import com.sixsense.newsfeed.config.PasswordEncoder;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
+import com.sixsense.newsfeed.domain.Status;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.*;
-import com.sixsense.newsfeed.error.exception.AuthenticationException;
-import com.sixsense.newsfeed.error.exception.UserAccessDeniedException;
-import com.sixsense.newsfeed.error.exception.UserConflictException;
-import com.sixsense.newsfeed.error.exception.UserNotFoundException;
+import com.sixsense.newsfeed.error.exception.*;
 import com.sixsense.newsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,21 +25,30 @@ public class UserService {
     private final TokenProvider tokenProvider;
 
     public User getById(Long id) {
-        return userRepository.findById(id)
+        User findUser = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+
+        // 활성 유저인지 확인 (여기서 검증하면 'getById()'를 호출하는 쪽에서는 헷갈려서 한 번 더 검증할 수 있을 듯
+        validateIsActiveUser(findUser);
+        return findUser;
     }
 
     public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
+        User findUser = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
+
+        // 활성 유저인지 확인
+        validateIsActiveUser(findUser);
+        return findUser;
     }
 
+    // 저장하기 전에 휴면 혹은, 삭제된 계정이 있는지 검증한 번 해야 함.
     @Transactional
     public SignUpResponseDto save(SignUpRequestDto requestDto) {
-
         // 중복된 유저 있을 시
         userRepository.findByEmail(requestDto.email())
                 .ifPresent(user -> {
+                    // 삭제되거나, 휴먼 상태인 계정일 경우에도 새로 가입하는 방식으로는 계정 활성화가 안 되게끔.
                     throw new UserConflictException();
                 });
 
@@ -54,9 +61,6 @@ public class UserService {
     // 로그인 처리
     public LoginResponseDto authenticate(LoginRequestDto requestDto) {
         User findUser = getByEmail(requestDto.email());
-
-        // 활성 유저인지 확인
-        validateIsActiveUser(findUser);
 
         // 비밀번호 일치 여부 확인
         if (!passwordEncoder.matches(requestDto.password(), findUser.getPassword())) {
@@ -76,9 +80,7 @@ public class UserService {
 
         User findUser = getById(id);
 
-        // 활성 유저인지 확인
-        validateIsActiveUser(findUser);
-
+        // update
         String encodedPassword = passwordEncoder.encode(requestDto.password());
         findUser.update(requestDto, encodedPassword);
 
@@ -92,25 +94,21 @@ public class UserService {
 
         User findUser = getById(id);
 
-        // 활성 유저인지 확인
-        validateIsActiveUser(findUser);
-
-        // delete
+        // Soft deletion
         findUser.deleteMe();
     }
 
     // 권한 확인
     private void validateIsAccessible(Long id, String accessToken) {
         Long userId = tokenProvider.getUserId(accessToken);
-        if (id != userId) {
+        if (!id.equals(userId)) {
             throw new UserAccessDeniedException();
         }
     }
 
     private void validateIsActiveUser(User user) {
-        if (!user.getStatus().isActive()) {
-            // 우선은 NotFound로 가자. 사실 ACTIVE, INACTIVE, DELETE <- 이렇게 3개 상태가 있어야 깔끔할 거 같은데
-            throw new UserNotFoundException();
+        if (user.getStatus() != Status.ACTIVE) {
+            throw new UserInactiveOrDeletedException();
         }
     }
 }

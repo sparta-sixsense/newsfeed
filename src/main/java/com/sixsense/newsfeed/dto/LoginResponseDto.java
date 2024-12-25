@@ -1,7 +1,7 @@
 package com.sixsense.newsfeed.dto;
 
 public record LoginResponseDto(
-        Long UserId,
+        Long userId,
         String accessToken,
         String refreshToken
 ) {

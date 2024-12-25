@@ -5,33 +5,24 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
+    // Base
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "INVALID_INPUT_VALUE", "올바르지 않은 입력값입니다."),
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "METHOD_NOT_ALLOWED", "잘못된 HTTP 메서드를 호출했습니다."),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", "서버에 에러가 발생했습니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND", "존재하지 않는 엔티티입니다."),
+    CONFLICT(HttpStatus.CONFLICT, "CONFLICT", "이미 존재하는 엔티티입니다."),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "ACCESS_DENIED", "접근 권한이 없습니다."),
 
-    // Basic
-    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "E1", "올바르지 않은 입력값입니다."),
-    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "E2", "잘못된 HTTP 메서드를 호출했습니다."),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "E3", "서버에 에러가 발생했습니다."),
-    NOT_FOUND(HttpStatus.NOT_FOUND, "E4", "존재하지 않는 엔티티입니다."),
-    CONFLICT(HttpStatus.CONFLICT, "E5", "이미 존재하는 엔티티입니다."),
-    ACCESS_DENIED(HttpStatus.FORBIDDEN, "E6", "접근 권한이 없습니다."),
-
-    // User (이건 3개를 하나로 만들어도 될 것 같다. 굳이 이렇게 세분화할 필요가 있는가...)
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U4", "존재하지 않는 유저입니다."),
-    USER_INACTIVE(HttpStatus.FORBIDDEN, "U6", "비활성화된 계정입니다."),
-    USER_CONFLICT(HttpStatus.CONFLICT, "U5", "이미 존재하는 유저입니다."),
-    USER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "U6", "접근 권한이 없습니다."),
-    AUTHENTICATION_FAILURE(HttpStatus.UNAUTHORIZED, "U8", "비밀번호가 일치하지 않습니다."),
+    // User
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "존재하지 않는 유저입니다."),
+    USER_INACTIVE_OR_DELETED(HttpStatus.FORBIDDEN, "USER_INACTIVE_OR_DELETED", "삭제되었거나 비활성화된 계정입니다."),
+    USER_CONFLICT(HttpStatus.CONFLICT, "USER_CONFLICT", "이미 가입된 이력이 있는 계정입니다."),
+    USER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "USER_ACCESS_DENIED", "접근 권한이 없습니다."),
+    AUTHENTICATION_FAILURE(HttpStatus.UNAUTHORIZED, "AUTHENTICATION_FAILURE", "비밀번호가 일치하지 않습니다."),
 
     // Token
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "T1", "유효하지 않은 토큰입니다."),
-    TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "T4", "존재하지 않는 토큰입니다"),
-
-    // Schedule
-    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "S4", "존재하지 않는 일정입니다."),
-    SCHEDULE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "S6", "해당 일정에 대한 접근 권한이 없습니다."),
-
-    // Comment
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C4", "존재하지 않는 댓글입니다."),
-    COMMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C6", "해당 댓글에 대한 접근 권한이 없습니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),
+    TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "TOKEN_NOT_FOUND", "존재하지 않는 토큰입니다"),
 
     ;
 
