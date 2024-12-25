@@ -1,15 +1,13 @@
 package com.sixsense.newsfeed.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user")
 @Entity
+@Data
 public class User extends BaseEntity {
 
     @Id
@@ -30,6 +28,10 @@ public class User extends BaseEntity {
 
     @Column(name = "age")
     private Integer age;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Builder
     public User(String email, String password, String name, String address, Integer age) {
