@@ -1,6 +1,5 @@
 package com.sixsense.newsfeed.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sixsense.newsfeed.config.PasswordEncoder;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
@@ -12,7 +11,6 @@ import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.error.exception.UserInactiveOrDeletedException;
 import com.sixsense.newsfeed.repository.UserRepository;
 import com.sixsense.newsfeed.service.UserService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +26,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.Duration;
 
 import static com.sixsense.newsfeed.constant.Token.AUTHORIZATION_HEADER;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,7 +69,7 @@ class UserApiControllerTest {
         // given
         String url = "/signup";
         // 회원가입시 각종 필드 조건 맞아야 함
-        SignUpRequestDto requestDto = new SignUpRequestDto("test@gmail.com", "123", "강성욱", "123", 10);
+        SignUpRequestDto requestDto = new SignUpRequestDto("test@gmail.com", "123", "강성욱", "https://~", "123", 10);
         String requestBody = objectMapper.writeValueAsString(requestDto);
 
         // when
@@ -89,7 +88,7 @@ class UserApiControllerTest {
     void createUserTest() throws Exception {
         // given
         String url = "/signup";
-        SignUpRequestDto requestDto = new SignUpRequestDto("test@gmail.com", "Ksu1234!!!", "강성욱", "경기도 ~~", 10);
+        SignUpRequestDto requestDto = new SignUpRequestDto("test@gmail.com", "Ksu1234!!!", "강성욱", "https://~", "경기도 ~~", 10);
         String requestBody = objectMapper.writeValueAsString(requestDto);
 
         // when
@@ -117,7 +116,7 @@ class UserApiControllerTest {
         String url = "/api/users/{id}";
         User savedUser = makeTestUser();
         String accessToken = tokenProvider.generateToken(savedUser, Duration.ofDays(1));
-        UpdateUserRequestDto requestDto = new UpdateUserRequestDto("Kkh1234!3", "강성욱", "사랑시 고백구 행복동", 100);
+        UpdateUserRequestDto requestDto = new UpdateUserRequestDto("Kkh1234!3", "강성욱", "https://~~","사랑시 고백구 행복동", 100);
         String requestBody = objectMapper.writeValueAsString(requestDto);
 
         // when

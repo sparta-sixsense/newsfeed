@@ -25,6 +25,7 @@ public record SignUpRequestDto(
         )
         String name,
 
+        String profileImgUrl,
         String address,
         Integer age
 ) {
@@ -32,8 +33,9 @@ public record SignUpRequestDto(
     public User toEntity(String encodedPassword) {
         return User.builder()
                 .email(email)
-                .name(name)
                 .password(encodedPassword)
+                .name(name)
+                .profileImgUrl(profileImgUrl)
                 .address(address)
                 .age(age)
                 .build();

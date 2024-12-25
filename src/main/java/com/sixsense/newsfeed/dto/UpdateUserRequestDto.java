@@ -19,6 +19,7 @@ public record UpdateUserRequestDto(
         )
         String name,
 
+        String profileImgUrl,
         String address,
         Integer age
 ) {

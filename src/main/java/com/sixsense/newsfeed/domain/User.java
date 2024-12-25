@@ -26,6 +26,9 @@ public class User extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "profile_img_url")
+    private String profileImgUrl;
+
     @Column(name = "address")
     private String address;
 
@@ -34,10 +37,11 @@ public class User extends BaseEntity {
 
 
     @Builder
-    public User(String email, String password, String name, String address, Integer age) {
+    public User(String email, String password, String name, String profileImgUrl, String address, Integer age) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.profileImgUrl = profileImgUrl;
         this.address = address;
         this.age = age;
         status = Status.ACTIVE;

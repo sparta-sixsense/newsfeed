@@ -63,7 +63,7 @@ class UserServiceTest {
     void signUpFailsTest() {
         // then
         userRepository.save(testUser);
-        SignUpRequestDto requestDto = new SignUpRequestDto(testEmail, "123", "강성욱", "123", 10);
+        SignUpRequestDto requestDto = new SignUpRequestDto(testEmail, "123", "강성욱", "https://~~", "123", 10);
 
         // when & then
         assertThatThrownBy(() -> {
@@ -77,7 +77,8 @@ class UserServiceTest {
     @Test
     void signUpSuccessTest() {
         // then
-        SignUpRequestDto requestDto = new SignUpRequestDto(testEmail, "123", "강성욱", "123", 10);
+        SignUpRequestDto requestDto = new SignUpRequestDto(testEmail, "123", "강성욱",
+                "https://~", "123", 10);
         userService.save(requestDto);
 
         // when
@@ -107,7 +108,8 @@ class UserServiceTest {
     @Test
     void loginFailsWhenPasswordDoesNotMatch() {
         // given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(testEmail, "123", "강성욱", "123", 10);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(testEmail, "123",
+                "강성욱", "https://~~", "123", 10);
         userService.save(signUpRequestDto);
 
         // then & when
@@ -127,7 +129,7 @@ class UserServiceTest {
 
         // when
         UpdateUserRequestDto requestDto = new UpdateUserRequestDto("1234",
-                "김치치즈스마일", "사랑시 고백구 행복동", 100);
+                "김치치즈스마일", "https://~~", "사랑시 고백구 행복동", 100);
         UpdateUserResponseDto responseDto = userService.updateUserResponseDto(savedUser.getId(), accessToken, requestDto);
 
         // then

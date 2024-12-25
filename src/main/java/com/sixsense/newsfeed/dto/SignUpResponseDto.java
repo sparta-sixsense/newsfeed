@@ -6,6 +6,7 @@ public record SignUpResponseDto(
         Long userId,
         String name,
         String email,
+        String profileImgUrl,
         Integer age,
         String address
 ) {
@@ -15,6 +16,7 @@ public record SignUpResponseDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
+                user.getProfileImgUrl(),
                 user.getAge(),
                 user.getAddress()
         );
