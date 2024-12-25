@@ -48,8 +48,6 @@ public class UserApiController {
     @GetMapping("/get/profile")
     public ResponseEntity<ProfileResponseDto> getProfile(@RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
 
-
-
         // 토큰을 사용하여 프로필 반환
         ProfileResponseDto profile = userService.getProfile(accessToken);
         return ResponseEntity.ok(profile);

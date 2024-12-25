@@ -1,11 +1,11 @@
 package com.sixsense.newsfeed.service;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.FollowRelationship;
+import com.sixsense.newsfeed.domain.Status;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.FollowRequestDto;
 import com.sixsense.newsfeed.dto.FollowResponseDto;
 import com.sixsense.newsfeed.error.ErrorCode;
-import com.sixsense.newsfeed.error.exception.UserConflictException;
 import com.sixsense.newsfeed.error.exception.UserNotFoundException;
 import com.sixsense.newsfeed.error.exception.base.ConflictException;
 import com.sixsense.newsfeed.error.exception.base.InvalidValueException;
@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -54,7 +55,7 @@ public class FollowRelationshipService {
     public List<FollowResponseDto> getFollowerList(Long userId, String accessToken) {
         Long tokenId = tokenProvider.getUserId(accessToken);
 
-        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowingId(userId);
+        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowingIdAndStatus(userId, Status.ACTIVE);
         return relationships.stream()
                 .map(relationship -> new FollowResponseDto(
                         relationship.getFollower().getId(),
@@ -68,7 +69,7 @@ public class FollowRelationshipService {
     public List<FollowResponseDto> getFollowingList(Long userId, String accessToken) {
         Long tokenId = tokenProvider.getUserId(accessToken);
 
-        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowerId(userId);
+        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowerIdAndStatus(userId, Status.ACTIVE);
         return relationships.stream()
                 .map(relationship -> new FollowResponseDto(
                         relationship.getFollowing().getId(),
@@ -79,7 +80,9 @@ public class FollowRelationshipService {
     }
 
     // 팔로우 삭제 (unfollow)
-    public void deleteFollow(Long userId, Long friendId) {
+    public void deleteFollow(Long userId, Long friendId, String accessToken) {
+        Long tokenId = tokenProvider.getUserId(accessToken);
+
         // follower: 요청한 사용자
         User follower = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
