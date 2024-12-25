@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "follow_relationship", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "friend_id"}))
+// user_id와 friend_id는 같을 수 없음
+@Table(name = "follow_relationship", uniqueConstraints = @UniqueConstraint(columnNames = {"requester_id", "acceptor_id"}))
 public class FollowRelationship extends BaseEntity {
 
     @Id
@@ -17,15 +18,15 @@ public class FollowRelationship extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "requester_id", nullable = false)
+    private User requester;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "friend_id", nullable = false)
-    private User friend;
+    @JoinColumn(name = "accepter_id", nullable = false)
+    private User accepter;
 
-    public FollowRelationship(User user, User friend) {
-        this.user = user;
-        this.friend = friend;
+    public FollowRelationship(User requester, User accepter) {
+        this.requester = requester;
+        this.accepter = accepter;
     }
 }

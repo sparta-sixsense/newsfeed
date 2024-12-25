@@ -99,14 +99,14 @@ public class UserService {
     }
 
     // 권한 확인
-    private void validateIsAccessible(Long id, String accessToken) {
+    public void validateIsAccessible(Long id, String accessToken) {
         Long userId = tokenProvider.getUserId(accessToken);
         if (!id.equals(userId)) {
             throw new UserAccessDeniedException();
         }
     }
 
-    private void validateIsActiveUser(User user) {
+    public void validateIsActiveUser(User user) {
         if (user.getStatus() != Status.ACTIVE) {
             throw new UserInactiveOrDeletedException();
         }
