@@ -33,6 +33,12 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C4", "존재하지 않는 댓글입니다."),
     COMMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C6", "해당 댓글에 대한 접근 권한이 없습니다."),
 
+    // FollowRelationship
+    FOLLOW_RELATION_INVALID_VALUE(HttpStatus.BAD_REQUEST, "F4", "잘못된 요청입니다. 자기 자신을 팔로우할 수 없습니다."),
+    FOLLOW_RELATION_NOT_FOUND(HttpStatus.NOT_FOUND, "F4", "존재하지 않는 관계입니다."),
+    FOLLOW_RELATION_ALREADY_ACTIVE(HttpStatus.CONFLICT, "F7", "이미 팔로우한 친구입니다."),
+    FOLLOW_RELATION_ALREADY_INACTIVE(HttpStatus.CONFLICT, "F8", "이미 언팔로우한 친구입니다.")
+
     ;
 
     private final HttpStatus status;
