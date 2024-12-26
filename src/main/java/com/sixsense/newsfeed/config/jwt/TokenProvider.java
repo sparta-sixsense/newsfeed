@@ -51,8 +51,8 @@ public class TokenProvider {
     }
 
     public boolean isExpiredToken(String token) {
-        if (!isValidToken(token)) {
-            return false;
+        if (isValidToken(token) == false) {
+            return true;
         }
 
         Date now = new Date();
