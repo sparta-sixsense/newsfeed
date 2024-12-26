@@ -15,9 +15,9 @@ import com.sixsense.newsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,6 +29,7 @@ public class FollowRelationshipService {
     private final TokenProvider tokenProvider;
 
     // 팔로우 생성 ( following 기능 )
+    @Transactional
     public void createFollow(Long userId, FollowRequestDto requestDto, String accessToken) {
         Long tokenId = tokenProvider.getUserId(accessToken);
 
@@ -80,6 +81,7 @@ public class FollowRelationshipService {
     }
 
     // 팔로우 삭제 (unfollow)
+    @Transactional
     public void deleteFollow(Long userId, Long friendId, String accessToken) {
         Long tokenId = tokenProvider.getUserId(accessToken);
 
