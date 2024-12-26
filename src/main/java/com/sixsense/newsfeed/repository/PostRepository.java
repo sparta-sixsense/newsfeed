@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     // 사용자 ID로 게시글 조회 + 페이징
@@ -22,7 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p " +
             "JOIN FollowRelationship fr ON p.user.id = fr.following.id " +
             "WHERE fr.follower.id = :userId " +
-            "AND p.isDeleted = false")
+            "AND p.isDeleted = false ORDER BY p.updatedAt DESC"
+    )
     Page<Post> findPostsByUsersFollowedBy(@Param("userId") Long userId, Pageable pageable);
 
 }
