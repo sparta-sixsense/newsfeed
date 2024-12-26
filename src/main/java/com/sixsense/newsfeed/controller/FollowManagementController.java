@@ -29,7 +29,7 @@ public class FollowManagementController {
                 .body(responseDto);
     }
 
-    /**
+    /*
      * following: 팔로우를 하고 있는 행위 자체
      * followee: 팔로우 당한 사람(특정 사람)
      * 하지만 팔로한 사람들(목록)을 명시할 때는 followings
@@ -45,6 +45,17 @@ public class FollowManagementController {
                 .body(followings);
     }
 
+    /*
+     * 팔로잉 취소 (사실 팔로잉 관계 테이블 자체 ID를 넘겨주면 이렇게 수고스럽게 할 필요가 없다...)
+     * 그러나 그렇게 하려면 api url을 다시 생각해야 한다.
+     */
+    @DeleteMapping("/api/users/{requesterId}/followings/{accepterId}")
+    public ResponseEntity<Void> deleteFollowing(@PathVariable Long requesterId,
+                                                @PathVariable Long accepterId,
+                                                @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
 
-    // 팔로잉 취소
+        followManagementService.deleteFollowing(requesterId, accepterId, accessToken);
+        return ResponseEntity.ok()
+                .build();
+    }
 }

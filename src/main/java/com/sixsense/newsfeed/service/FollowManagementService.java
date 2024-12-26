@@ -53,4 +53,22 @@ public class FollowManagementService {
                 .map(GetFollowingResponse::new)
                 .toList();
     }
+
+    @Transactional
+    public void deleteFollowing(Long requesterId, Long accepterId, String accessToken) {
+
+        Long userId = tokenProvider.getUserId(accessToken);
+        User requester = userService.getById(requesterId);
+        User accepter = userService.getById(accepterId);
+
+        // 유저 권한 확인
+        userService.validateIsAccessible(userId, accessToken);
+
+        // 유저 status 확인
+        userService.validateIsActiveUser(requester);
+
+        // 팔로잉 관계 삭제 (그런데 만약 null 값을 삭제하면 어떻게 되지?)
+
+
+    }
 }
