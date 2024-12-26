@@ -95,7 +95,7 @@ public class UserApiController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
     @DeleteMapping("/api/users/{id}")
-    public ResponseEntity<Void> deleteProfile(@RequestBody ProfileUpdateRequestDto dto, @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
+    public ResponseEntity<Void> deleteProfile(@RequestBody ProfileDeleteRequestDto dto, @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
         userService.deleteProfile(accessToken, dto);
         return ResponseEntity.ok().build();
     }

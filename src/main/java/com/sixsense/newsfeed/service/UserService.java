@@ -4,12 +4,7 @@ import com.sixsense.newsfeed.config.PasswordEncoder;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.domain.Status;
-import com.sixsense.newsfeed.dto.LoginRequestDto;
-import com.sixsense.newsfeed.dto.LoginResponseDto;
-import com.sixsense.newsfeed.dto.SignUpRequestDto;
-import com.sixsense.newsfeed.dto.SignUpResponseDto;
-import com.sixsense.newsfeed.dto.ProfileResponseDto;
-import com.sixsense.newsfeed.dto.ProfileUpdateRequestDto;
+import com.sixsense.newsfeed.dto.*;
 import com.sixsense.newsfeed.error.exception.AuthenticationException;
 import com.sixsense.newsfeed.error.exception.UserConflictException;
 import com.sixsense.newsfeed.error.exception.UserNotFoundException;
@@ -79,7 +74,6 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException());
 
         return ProfileResponseDto.builder()
-                .id(user.getId())
                 .name(user.getName())
                 .age(user.getAge())
                 .address(user.getAddress())
@@ -109,7 +103,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteProfile(String token, ProfileUpdateRequestDto dto) {
+    public void deleteProfile(String token, ProfileDeleteRequestDto dto) {
 
         Long userId = tokenProvider.getUserId(token);
 
