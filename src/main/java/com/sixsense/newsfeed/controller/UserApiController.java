@@ -47,25 +47,26 @@ public class UserApiController {
                 .body(response);
     }
 
-    @GetMapping("/get/profile")
+    @GetMapping("/api/profile")
     public ResponseEntity<ProfileResponseDto> getProfile(@RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
-
-
-
         // 토큰을 사용하여 프로필 반환
         ProfileResponseDto profile = userService.getProfile(accessToken);
         return ResponseEntity.ok(profile);
     }
 
-    @PutMapping("/set/profile")
+    @PutMapping("/api/profile")
     public ResponseEntity<Void> updateProfile(
             @RequestBody ProfileUpdateRequestDto dto,
             @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
-        System.out.println("Hello, World!");
-        // 2. 프로필 업데이트 처리
+
         userService.updateProfile(accessToken, dto);
-        System.out.println("Hello, World!");
-        // 3. 응답 반환
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/api/profile")
+
+    public ResponseEntity<Void> deleteProfile(@RequestBody ProfileUpdateRequestDto dto, @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
+        userService.deleteProfile(accessToken, dto);
         return ResponseEntity.ok().build();
     }
 }

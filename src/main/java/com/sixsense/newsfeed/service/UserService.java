@@ -70,14 +70,13 @@ public class UserService {
 
 
     public ProfileResponseDto getProfile(String token) {
-        // 1. 토큰에서 사용자 ID 추출
+        //토큰에서 사용자 ID 추출
         Long userId = tokenProvider.getUserId(token);
 
-        // 2. 사용자 조회
+        //사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException());
 
-        // 3. ProfileResponseDto 생성
         return ProfileResponseDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -88,25 +87,37 @@ public class UserService {
 
 
     public void updateProfile(String token, ProfileUpdateRequestDto dto) {
-        // 1. 토큰에서 사용자 ID 추출
         Long userId = tokenProvider.getUserId(token);
 
-        // 2. 사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException());
 
-        // 3. 비밀번호 검증
+        //비밀번호 검증
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new AuthenticationException(ErrorCode.AUTHENTICATION_FAILURE);
         }
 
-        // 4. 프로필 정보 업데이트
         if (dto.getName() != null) user.setName(dto.getName());
         if (dto.getAge() != null) user.setAge(dto.getAge());
         if (dto.getAddress() != null) user.setAddress(dto.getAddress());
 
-        // 5. 변경 사항 저장
         userRepository.save(user);
+    }
+
+    public void deleteProfile(String token, ProfileUpdateRequestDto dto) {
+
+        Long userId = tokenProvider.getUserId(token);
+        System.out.println("확인");
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new AuthenticationException(ErrorCode.AUTHENTICATION_FAILURE);
+        }
+
+        userRepository.delete(user);
+
     }
 
 
