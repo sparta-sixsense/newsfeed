@@ -119,7 +119,7 @@ public class PostApiController {
             description = "팔로잉 게시글을 최근 업데이트순으로 조회합니다",
             tags = {"Post Management"}
     )
-    @ApiResponse(responseCode = "200", description = "성공적으로 게시글 수정", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "200", description = "성공적으로 게시글 수정")
     @ApiResponse(responseCode = "401", description = "유효하지 않은 토큰 입니다.")
     @ApiResponse(responseCode = "401", description = "존재하지 않는 토큰 입니다.")
     @ApiResponse(responseCode = "403", description = "접근할 수 없는 게시글 입니다.")
@@ -139,7 +139,7 @@ public class PostApiController {
             description = "accessToken의 userId값을 비교해 게시글을 삭제합니다. ",
             tags = {"Post Management"}
     )
-    @ApiResponse(responseCode = "204", description = "성공적으로 게시글 삭제", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = "204", description = "성공적으로 게시글 삭제")
     @ApiResponse(responseCode = "401", description = "유효하지 않은 토큰 입니다.")
     @ApiResponse(responseCode = "401", description = "존재하지 않는 토큰 입니다.")
     @ApiResponse(responseCode = "403", description = "접근할 수 없는 게시글 입니다.")
