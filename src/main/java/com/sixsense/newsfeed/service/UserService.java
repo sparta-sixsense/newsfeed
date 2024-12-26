@@ -3,6 +3,7 @@ package com.sixsense.newsfeed.service;
 import com.sixsense.newsfeed.config.PasswordEncoder;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.User;
+import com.sixsense.newsfeed.domain.Status;
 import com.sixsense.newsfeed.dto.LoginRequestDto;
 import com.sixsense.newsfeed.dto.LoginResponseDto;
 import com.sixsense.newsfeed.dto.SignUpRequestDto;
@@ -97,6 +98,10 @@ public class UserService {
             throw new AuthenticationException(ErrorCode.AUTHENTICATION_FAILURE);
         }
 
+        if (!Status.ACTIVE.equals(user.getStatus())) {
+            throw new IllegalStateException("삭제할 수 없는 상태입니다. 상태가 ACTIVE인 사용자만 삭제 가능합니다.");
+        }
+
         if (dto.getName() != null) user.setName(dto.getName());
         if (dto.getAge() != null) user.setAge(dto.getAge());
         if (dto.getAddress() != null) user.setAddress(dto.getAddress());
@@ -107,13 +112,16 @@ public class UserService {
     public void deleteProfile(String token, ProfileUpdateRequestDto dto) {
 
         Long userId = tokenProvider.getUserId(token);
-        System.out.println("확인");
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException());
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new AuthenticationException(ErrorCode.AUTHENTICATION_FAILURE);
+        }
+
+        if (!Status.ACTIVE.equals(user.getStatus())) {
+            throw new IllegalStateException("삭제할 수 없는 상태입니다. 상태가 ACTIVE인 사용자만 삭제 가능합니다.");
         }
 
         userRepository.delete(user);
