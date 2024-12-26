@@ -30,8 +30,8 @@ public class FollowRelationshipService {
 
     // 팔로우 생성 ( following 기능 )
     @Transactional
-    public void createFollow(Long userId, FollowRequestDto requestDto, String accessToken) {
-        Long tokenId = tokenProvider.getUserId(accessToken);
+    public void createFollow(FollowRequestDto requestDto, String accessToken) {
+        Long userId = tokenProvider.getUserId(accessToken);
 
         User follower = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
@@ -53,8 +53,8 @@ public class FollowRelationshipService {
     }
 
     // 팔로워 목록 조회 (나를 팔로우 하는 목록)
-    public List<FollowResponseDto> getFollowerList(Long userId, String accessToken) {
-        Long tokenId = tokenProvider.getUserId(accessToken);
+    public List<FollowResponseDto> getFollowerList(String accessToken) {
+        Long userId = tokenProvider.getUserId(accessToken);
 
         List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowingIdAndStatus(userId, Status.ACTIVE);
         return relationships.stream()
@@ -67,8 +67,8 @@ public class FollowRelationshipService {
     }
 
     // 팔로잉 목록 조회 (내가 팔로우 하는 목록)
-    public List<FollowResponseDto> getFollowingList(Long userId, String accessToken) {
-        Long tokenId = tokenProvider.getUserId(accessToken);
+    public List<FollowResponseDto> getFollowingList(String accessToken) {
+        Long userId = tokenProvider.getUserId(accessToken);
 
         List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowerIdAndStatus(userId, Status.ACTIVE);
         return relationships.stream()
@@ -82,8 +82,8 @@ public class FollowRelationshipService {
 
     // 팔로우 삭제 (unfollow)
     @Transactional
-    public void deleteFollow(Long userId, Long friendId, String accessToken) {
-        Long tokenId = tokenProvider.getUserId(accessToken);
+    public void deleteFollow(Long friendId, String accessToken) {
+        Long userId = tokenProvider.getUserId(accessToken);
 
         // follower: 요청한 사용자
         User follower = userRepository.findById(userId)
