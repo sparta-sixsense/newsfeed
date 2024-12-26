@@ -27,18 +27,19 @@ public class PostService {
     public PostResponseDto createPost(CreatePostRequestDto dto, String token) {
         Long userId = tokenProvider.getUserId(token);
         User currentUser = userService.getById(userId);
-
-        // 게시글 생성
+        
         Post createdPost = postRepository.save(dto.toEntity(currentUser));
         return PostResponseDto.fromEntity(createdPost);
     }
 
+    // 내가쓴 게시글 조회
     public Page<PostResponseDto> findAllMyPosts(String token, Pageable pageable) {
         Long userId = tokenProvider.getUserId(token);
         return postRepository.findAllByUserId(userId, pageable)
                 .map(PostResponseDto::fromEntity);
     }
 
+    // 팔로잉 게시글 조회
     public Page<PostResponseDto> findAllFollowingPosts(String token, Pageable pageable) {
         Long userId = tokenProvider.getUserId(token);
 
@@ -46,23 +47,25 @@ public class PostService {
                 .map(PostResponseDto::fromEntity);
     }
 
+    // 모든 게시글 조회
     public Page<PostResponseDto> findAll(Pageable pageable) {
         return postRepository.findAllByOrderByUpdatedAtDesc(pageable)
                 .map(PostResponseDto::fromEntity);
     }
 
+    // 특정 게시글 상세조회
     public PostResponseDto findById(Long id) {
         Post findPost = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
         return PostResponseDto.fromEntity(findPost);
     }
 
+    // 게시글 수정
     public PostResponseDto update(Long id,
                                   UpdatePostRequestDto requestDto,
                                   String token) {
 
         Long userId = tokenProvider.getUserId(token);
-//        User currentUser = userService.getById(userId);
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
@@ -75,7 +78,7 @@ public class PostService {
             throw new AccessDeniedException(ErrorCode.POST_ACCESS_DENIED);
         }
 
-        post.update(requestDto.getContent(),requestDto.getImgUrl());
+        post.update(requestDto.content(),requestDto.imgUrl());
 
         postRepository.save(post);
 
@@ -89,6 +92,7 @@ public class PostService {
         );
     }
 
+    // 게시글 삭제 (Soft Delete)
     public void delete(Long id, String token) {
         Long userId = tokenProvider.getUserId(token);
 

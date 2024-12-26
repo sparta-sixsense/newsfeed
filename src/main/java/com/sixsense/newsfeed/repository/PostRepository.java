@@ -10,7 +10,9 @@ import org.springframework.data.repository.query.Param;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     // 사용자 ID로 게시글 조회 + 페이징
-    @Query("SELECT p FROM Post p WHERE p.user.id = :userId AND p.isDeleted = false ORDER BY p.updatedAt DESC")
+    @Query("SELECT p FROM Post p " +
+            "WHERE p.user.id = :userId AND p.isDeleted = false " +
+            "ORDER BY p.updatedAt DESC")
     Page<Post> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
 
     // 모든 게시글 조회 + 페이징
