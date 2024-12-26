@@ -57,7 +57,7 @@ public class UserApiController {
             description = "성공적으로 조회된 프로필 정보 반환",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
-    @GetMapping("/api/users")
+    @GetMapping("/api/users/{id}")
     public ResponseEntity<ProfileResponseDto> getProfile(@RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
         // 토큰을 사용하여 프로필 반환
         ProfileResponseDto profile = userService.getProfile(accessToken);
@@ -74,7 +74,7 @@ public class UserApiController {
             description = "성공적으로 프로필이 업데이트됨",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
-    @PutMapping("/api/users")
+    @PutMapping("/api/users/{id}")
     public ResponseEntity<Void> updateProfile(
             @RequestBody @Valid ProfileUpdateRequestDto dto,
             @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
@@ -94,7 +94,7 @@ public class UserApiController {
             description = "성공적으로 프로필이 삭제됨",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     )
-    @DeleteMapping("/api/users")
+    @DeleteMapping("/api/users/{id}")
     public ResponseEntity<Void> deleteProfile(@RequestBody ProfileUpdateRequestDto dto, @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
         userService.deleteProfile(accessToken, dto);
         return ResponseEntity.ok().build();
