@@ -8,9 +8,9 @@ import com.sixsense.newsfeed.dto.PostResponseDto;
 import com.sixsense.newsfeed.dto.UpdatePostRequestDto;
 import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.error.exception.base.AccessDeniedException;
+import com.sixsense.newsfeed.error.exception.base.ConflictException;
 import com.sixsense.newsfeed.error.exception.base.NotFoundException;
 import com.sixsense.newsfeed.repository.PostRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +23,6 @@ public class PostService {
     private final TokenProvider tokenProvider;
     private final PostRepository postRepository;
 
-    @Transactional
     // 게시글 생성
     public PostResponseDto createPost(CreatePostRequestDto dto, String token) {
         Long userId = tokenProvider.getUserId(token);
@@ -36,13 +35,18 @@ public class PostService {
 
     public Page<PostResponseDto> findAllMyPosts(String token, Pageable pageable) {
         Long userId = tokenProvider.getUserId(token);
-
         return postRepository.findAllByUserId(userId, pageable)
                 .map(PostResponseDto::fromEntity);
     }
 
-    public Page<PostResponseDto> findAll(Pageable pageable) {
+    public Page<PostResponseDto> findAllFollowingPosts(String token, Pageable pageable) {
+        Long userId = tokenProvider.getUserId(token);
 
+        return postRepository.findPostsByUsersFollowedBy(userId, pageable)
+                .map(PostResponseDto::fromEntity);
+    }
+
+    public Page<PostResponseDto> findAll(Pageable pageable) {
         return postRepository.findAllByOrderByUpdatedAtDesc(pageable)
                 .map(PostResponseDto::fromEntity);
     }
@@ -63,11 +67,15 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
+        if(post.isDeleted()){
+            throw new ConflictException(ErrorCode.POST_ALREADY_DELETED);
+        }
+
         if (!post.getUser().getId().equals(userId)) {
             throw new AccessDeniedException(ErrorCode.POST_ACCESS_DENIED);
         }
 
-        post.update(requestDto.getContent(), requestDto.getImgUrl());
+        post.update(requestDto.getContent(),requestDto.getImgUrl());
 
         postRepository.save(post);
 
@@ -87,11 +95,15 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
+        if(post.isDeleted()){
+            throw new ConflictException(ErrorCode.POST_ALREADY_DELETED);
+        }
+
         if (!post.getUser().getId().equals(userId)) {
             throw new AccessDeniedException(ErrorCode.POST_ACCESS_DENIED);
         }
 
-        post.deactive();
+        post.setIsDeleted(true);
 
         postRepository.save(post);
     }

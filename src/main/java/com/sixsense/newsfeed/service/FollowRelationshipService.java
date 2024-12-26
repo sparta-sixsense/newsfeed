@@ -1,15 +1,11 @@
 package com.sixsense.newsfeed.service;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.FollowRelationship;
-import com.sixsense.newsfeed.domain.Status;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.FollowRequestDto;
 import com.sixsense.newsfeed.dto.FollowResponseDto;
-import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.error.exception.UserNotFoundException;
-import com.sixsense.newsfeed.error.exception.base.ConflictException;
 import com.sixsense.newsfeed.error.exception.base.InvalidValueException;
-import com.sixsense.newsfeed.error.exception.base.NotFoundException;
 import com.sixsense.newsfeed.repository.FollowRelationshipRepository;
 import com.sixsense.newsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
+/**
+ * TODO 팔로우 관게 예외를 따로 만들기!
+ */
 
 @Slf4j
 @Service
@@ -30,6 +29,7 @@ public class FollowRelationshipService {
 
     // 팔로우 생성 ( following 기능 )
     public void createFollow(Long userId, FollowRequestDto requestDto, String accessToken) {
+        log.info("accessToken: {}", accessToken);
         Long tokenId = tokenProvider.getUserId(accessToken);
 
         User follower = userRepository.findById(userId)
@@ -40,12 +40,12 @@ public class FollowRelationshipService {
 
 
         if (follower.equals(following)) {
-            throw new InvalidValueException(ErrorCode.FOLLOW_RELATION_INVALID_VALUE);
+            throw new InvalidValueException(); // 잘못된 요청입니다. 자기 자신을 팔로우할 수 없습니다.
         }
 
         boolean alreadyFollowing = followRelationshipRepository.existsByFollowerAndFollowing(follower, following);
         if (alreadyFollowing) {
-            throw new ConflictException(ErrorCode.FOLLOW_RELATION_ALREADY_ACTIVE);
+            throw new InvalidValueException(); // 이미 팔로우하는 친구입니다.
         }
 
         followRelationshipRepository.save(new FollowRelationship(follower, following));
@@ -55,7 +55,7 @@ public class FollowRelationshipService {
     public List<FollowResponseDto> getFollowerList(Long userId, String accessToken) {
         Long tokenId = tokenProvider.getUserId(accessToken);
 
-        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowingIdAndStatus(userId, Status.ACTIVE);
+        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowingId(userId);
         return relationships.stream()
                 .map(relationship -> new FollowResponseDto(
                         relationship.getFollower().getId(),
@@ -69,7 +69,7 @@ public class FollowRelationshipService {
     public List<FollowResponseDto> getFollowingList(Long userId, String accessToken) {
         Long tokenId = tokenProvider.getUserId(accessToken);
 
-        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowerIdAndStatus(userId, Status.ACTIVE);
+        List<FollowRelationship> relationships = followRelationshipRepository.findAllByFollowerId(userId);
         return relationships.stream()
                 .map(relationship -> new FollowResponseDto(
                         relationship.getFollowing().getId(),
@@ -80,26 +80,7 @@ public class FollowRelationshipService {
     }
 
     // 팔로우 삭제 (unfollow)
-    public void deleteFollow(Long userId, Long friendId, String accessToken) {
-        Long tokenId = tokenProvider.getUserId(accessToken);
 
-        // follower: 요청한 사용자
-        User follower = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
-
-        // following: 언팔로우 할 대상 사용자
-        User following = userRepository.findById(friendId)
-                .orElseThrow(UserNotFoundException::new);
-
-        //팔로우 관계가 존재하는지 확인
-        FollowRelationship relationship = followRelationshipRepository.findByFollowerAndFollowing(follower, following)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.FOLLOW_RELATION_NOT_FOUND));
-
-        relationship.inactive();
-
-        //물리적 데이터 삭제 X, relationship_status Inactive로 변경
-        followRelationshipRepository.save(relationship);
-    }
 }
 
 

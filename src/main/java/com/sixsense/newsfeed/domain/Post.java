@@ -24,19 +24,17 @@ public class Post extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Status status;
 
     public Post(String content, String imgUrl, User user){
         this.content = content;
         this.imgUrl = imgUrl;
         this.user = user;
-        status = Status.ACTIVE;
     }
 
     public void update(String content, String imgUrl) {
@@ -44,17 +42,10 @@ public class Post extends BaseEntity {
         this.imgUrl = imgUrl;
     }
 
-    public void deactive(){
-        if(this.status == Status.INACTIVE){
-            throw new ConflictException(ErrorCode.POST_ALREADY_INACTIVE);
+    public void setIsDeleted(boolean isDeleted) {
+        if (this.isDeleted == isDeleted) {
+            throw new ConflictException(isDeleted ? ErrorCode.POST_ALREADY_DELETED : ErrorCode.POST_ALREADY_RESTORED);
         }
-        this.status = Status.INACTIVE;
-    }
-
-    public void activate(){
-        if(this.status == Status.ACTIVE){
-            throw new ConflictException(ErrorCode.POST_ALREADY_ACTIVE);
-        }
-        this.status = Status.ACTIVE;
+        this.isDeleted = isDeleted;
     }
 }
