@@ -2,6 +2,7 @@ package com.sixsense.newsfeed.service;
 
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.Post;
+import com.sixsense.newsfeed.domain.Status;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.CreatePostRequestDto;
 import com.sixsense.newsfeed.dto.PostResponseDto;
@@ -27,6 +28,11 @@ public class PostService {
     public PostResponseDto createPost(CreatePostRequestDto dto, String token) {
         Long userId = tokenProvider.getUserId(token);
         User currentUser = userService.getById(userId);
+
+        // 사용자 상태 확인
+        if (currentUser.getStatus() == Status.INACTIVE) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
         
         Post createdPost = postRepository.save(dto.toEntity(currentUser));
         return PostResponseDto.fromEntity(createdPost);
@@ -35,6 +41,12 @@ public class PostService {
     // 내가쓴 게시글 조회
     public Page<PostResponseDto> findAllMyPosts(String token, Pageable pageable) {
         Long userId = tokenProvider.getUserId(token);
+        User currentUser = userService.getById(userId);
+
+        // 사용자 상태 확인
+        if (currentUser.getStatus() == Status.INACTIVE) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
         return postRepository.findAllByUserId(userId, pageable)
                 .map(PostResponseDto::fromEntity);
     }
@@ -66,6 +78,12 @@ public class PostService {
                                   String token) {
 
         Long userId = tokenProvider.getUserId(token);
+        User currentUser = userService.getById(userId);
+
+        // 사용자 상태 확인
+        if (currentUser.getStatus() == Status.INACTIVE) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
@@ -95,6 +113,12 @@ public class PostService {
     // 게시글 삭제 (Soft Delete)
     public void delete(Long id, String token) {
         Long userId = tokenProvider.getUserId(token);
+        User currentUser = userService.getById(userId);
+
+        // 사용자 상태 확인
+        if (currentUser.getStatus() == Status.INACTIVE) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
