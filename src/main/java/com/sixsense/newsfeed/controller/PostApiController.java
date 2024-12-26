@@ -13,28 +13,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.sixsense.newsfeed.constant.Token.AUTHORIZATION_HEADER;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/feeds")
 public class PostApiController {
     private final PostService postService;
 
-    // 글작성
     @PostMapping
     public ResponseEntity<PostResponseDto> createPost(
             @Valid @RequestBody CreatePostRequestDto dto,
-            @RequestHeader("Authorization") String token) {
-        PostResponseDto responseDto = postService.createPost(dto, token);
+            @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
+        PostResponseDto responseDto = postService.createPost(dto, accessToken);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/my-posts")
     public ResponseEntity<Page<PostResponseDto>> findAllMyPosts(
-            @RequestHeader("Authorization") String token,
+            @RequestHeader(AUTHORIZATION_HEADER) String accessToken,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<PostResponseDto> allMyPosts = postService.findAllMyPosts(token, pageable);
+        Page<PostResponseDto> allMyPosts = postService.findAllMyPosts(accessToken, pageable);
         return ResponseEntity.ok(allMyPosts);
     }
 
@@ -54,22 +55,33 @@ public class PostApiController {
         return new ResponseEntity<>(postDetails,HttpStatus.OK);
     }
 
+    @GetMapping("/following-posts")
+    public ResponseEntity<Page<PostResponseDto>> findAllFollowingPosts(
+            @RequestHeader(AUTHORIZATION_HEADER) String accessToken,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // PageRequest 설정 (0-based index)
+        Page<PostResponseDto> followingPosts = postService.findAllFollowingPosts(accessToken, pageable);
+        return ResponseEntity.ok(followingPosts);
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<PostResponseDto> Update(
             @PathVariable Long id,
             @Valid @RequestBody UpdatePostRequestDto requestDto,
-            @RequestHeader("Authorization") String token
+            @RequestHeader(AUTHORIZATION_HEADER) String accessToken
     ){
-        PostResponseDto update = postService.update(id, requestDto, token);
+        PostResponseDto update = postService.update(id, requestDto, accessToken);
         return ResponseEntity.ok(update);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
-            @RequestHeader("Authorization") String token
+            @RequestHeader(AUTHORIZATION_HEADER) String accessToken
     ){
-        postService.delete(id,token);
+        postService.delete(id,accessToken);
         return ResponseEntity.noContent().build();
     }
 }
