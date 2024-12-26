@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.1"
     id("io.spring.dependency-management") version "1.1.7"
+    kotlin("jvm")
 }
 
 group = "com.sixsense"
@@ -56,6 +57,7 @@ dependencies {
 
     // Swagger
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.withType<Test> {
