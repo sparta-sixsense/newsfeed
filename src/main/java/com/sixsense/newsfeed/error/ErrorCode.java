@@ -23,13 +23,21 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "T1", "유효하지 않은 토큰입니다."),
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "T4", "존재하지 않는 토큰입니다"),
 
-    // Schedule
-    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "S4", "존재하지 않는 일정입니다."),
-    SCHEDULE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "S6", "해당 일정에 대한 접근 권한이 없습니다."),
+    // Post
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "P4", "존재하지 않는 게시글입니다."),
+    POST_ACCESS_DENIED(HttpStatus.FORBIDDEN, "P6", "사용자가 이 게시글에 접근할 권한이 없습니다."),
+    POST_ALREADY_DELETED(HttpStatus.CONFLICT, "P7", "이미 삭제된 게시글 입니다."),
+    POST_ALREADY_RESTORED(HttpStatus.CONFLICT, "P8", "이미 복구된 게시글입니다."),
 
     // Comment
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C4", "존재하지 않는 댓글입니다."),
     COMMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C6", "해당 댓글에 대한 접근 권한이 없습니다."),
+
+    // FollowRelationship
+    FOLLOW_RELATION_INVALID_VALUE(HttpStatus.BAD_REQUEST, "F4", "잘못된 요청입니다. 자기 자신을 팔로우할 수 없습니다."),
+    FOLLOW_RELATION_NOT_FOUND(HttpStatus.NOT_FOUND, "F4", "존재하지 않는 관계입니다."),
+    FOLLOW_RELATION_ALREADY_ACTIVE(HttpStatus.CONFLICT, "F7", "이미 팔로우한 친구입니다."),
+    FOLLOW_RELATION_ALREADY_INACTIVE(HttpStatus.CONFLICT, "F8", "이미 언팔로우한 친구입니다.")
 
     ;
 
