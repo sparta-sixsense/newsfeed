@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor // 기본 생성자 추가
 @AllArgsConstructor // 모든 필드를 포함하는 생성자 추가
 @Builder // 빌더 패턴 지원
-public class ProfileResponseDto {
-    private String name;
-    private Integer age;
-    private String address;
+public class ProfileDeleteRequestDto {
+    private String password;
 }

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor // 모든 필드를 포함하는 생성자 추가
 @Builder // 빌더 패턴 지원
 public class ProfileUpdateRequestDto {
-    private Long id;
     private String name;
     private Integer age;
     private String address;
