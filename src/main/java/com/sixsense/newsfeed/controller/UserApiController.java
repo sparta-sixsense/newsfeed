@@ -6,10 +6,8 @@ import com.sixsense.newsfeed.dto.SignUpRequestDto;
 import com.sixsense.newsfeed.dto.SignUpResponseDto;
 import com.sixsense.newsfeed.dto.ProfileResponseDto;
 import com.sixsense.newsfeed.dto.ProfileUpdateRequestDto;
-import com.sixsense.newsfeed.error.exception.AuthenticationException;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +47,6 @@ public class UserApiController {
 
     @GetMapping("/get/profile")
     public ResponseEntity<ProfileResponseDto> getProfile(@RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
-
-
 
         // 토큰을 사용하여 프로필 반환
         ProfileResponseDto profile = userService.getProfile(accessToken);

@@ -50,6 +50,12 @@ public class FollowRelationshipController {
     }
 
     // 팔로우 삭제 (언팔로우) API
+    @DeleteMapping("/{friend_id}")
+    public ResponseEntity<Void> unfollow(@PathVariable("user_id") Long userId,
+                                         @PathVariable("friend_id") Long friendId,
+                                         @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
 
-
+        followRelationshipService.deleteFollow(userId, friendId, accessToken);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
