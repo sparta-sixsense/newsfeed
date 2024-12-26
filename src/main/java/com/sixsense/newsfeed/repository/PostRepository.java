@@ -22,7 +22,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p " +
             "JOIN FollowRelationship fr ON p.user.id = fr.following.id " +
             "WHERE fr.follower.id = :userId " +
-            "AND p.isDeleted = false")
+            "AND p.isDeleted = false ORDER BY p.updatedAt DESC"
+    )
     Page<Post> findPostsByUsersFollowedBy(@Param("userId") Long userId, Pageable pageable);
 
 }
