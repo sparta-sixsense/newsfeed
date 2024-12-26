@@ -52,34 +52,34 @@ class TokenApiControllerTest {
         userRepository.deleteAll();
     }
 
-//    @DisplayName("AccessToken 재발급 성공")
-//    @Test
-//    void createNewAccessTokenTest() throws Exception {
-//        // then
-//        String url = "/api/token";
-//        User testUser = userRepository.save(
-//                User.builder()
-//                        .name("홍길동")
-//                        .email("user@gmail.com")
-//                        .address("제주특별자치도 ~~")
-//                        .age(40)
-//                        .password("12345")
-//                        .build()
-//        );
-//        String accessToken = tokenProvider.generateToken(testUser, Duration.ofHours(1));
-//        String refreshToken = tokenProvider.generateToken(testUser, Duration.ofDays(7));
-//        String requestBody = objectMapper.writeValueAsString(new CreateAccessTokenRequestDto(refreshToken));
-//
-//        // when
-//        ResultActions result = mockMvc.perform(post(url)
-//                .header(AUTHORIZATION_HEADER, accessToken)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(requestBody)
-//                .accept(MediaType.APPLICATION_JSON)
-//        );
-//
-//        // then
-//        result.andExpect(status().isCreated());
-//
-//    }
+    @DisplayName("AccessToken 재발급 성공")
+    @Test
+    void createNewAccessTokenTest() throws Exception {
+        // then
+        String url = "/api/token";
+        User testUser = userRepository.save(
+                User.builder()
+                        .name("홍길동")
+                        .email("user@gmail.com")
+                        .address("제주특별자치도 ~~")
+                        .age(40)
+                        .password("12345")
+                        .build()
+        );
+        String accessToken = tokenProvider.generateToken(testUser, Duration.ofHours(1));
+        String refreshToken = tokenProvider.generateToken(testUser, Duration.ofDays(7));
+        String requestBody = objectMapper.writeValueAsString(new CreateAccessTokenRequestDto(refreshToken));
+
+        // when
+        ResultActions result = mockMvc.perform(post(url)
+                .header(AUTHORIZATION_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+                .accept(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isCreated());
+
+    }
 }

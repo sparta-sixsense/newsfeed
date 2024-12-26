@@ -35,6 +35,7 @@ public class AuthorizationFilter implements Filter {
         log.info("Processing authorization for request: {}", request.getRequestURI());
 
         if (!isWhiteListRequest(request)) {
+            log.info("if문 안이에요");
             if (!validateToken(request, response)) {
                 return; // 토큰이 유효하지 않으면 필터 체인 중단
             }
