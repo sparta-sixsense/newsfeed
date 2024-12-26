@@ -1,4 +1,5 @@
 package com.sixsense.newsfeed.service;
+
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.FollowRelationship;
 import com.sixsense.newsfeed.domain.Status;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -39,18 +41,30 @@ public class FollowRelationshipService {
         User following = userRepository.findById(requestDto.friendId())
                 .orElseThrow(UserNotFoundException::new);
 
-
+        // 자기 자신을 팔로우 할 수 없음
         if (follower.equals(following)) {
             throw new InvalidValueException(ErrorCode.FOLLOW_RELATION_INVALID_VALUE);
         }
 
-        boolean alreadyFollowing = followRelationshipRepository.existsByFollowerAndFollowing(follower, following);
-        if (alreadyFollowing) {
-            throw new ConflictException(ErrorCode.FOLLOW_RELATION_ALREADY_ACTIVE);
-        }
+        Optional<FollowRelationship> existingRelation = followRelationshipRepository.findByFollowerAndFollowing(follower, following);
 
-        followRelationshipRepository.save(new FollowRelationship(follower, following));
+        // 기존 팔로우 관계가 있는지 확인
+        if (existingRelation.isPresent()) {
+            FollowRelationship relationship = existingRelation.get();
+
+            // 이미 팔로우 중인 경우
+            if (relationship.getStatus() == Status.ACTIVE) {
+                throw new ConflictException(ErrorCode.FOLLOW_RELATION_ALREADY_ACTIVE);
+            }
+
+            // inactive -> active 변경
+            relationship.active();
+            followRelationshipRepository.save(relationship);
+        } else {
+            followRelationshipRepository.save(new FollowRelationship(follower, following));
+        }
     }
+
 
     // 팔로워 목록 조회 (나를 팔로우 하는 목록)
     public List<FollowResponseDto> getFollowerList(String accessToken) {

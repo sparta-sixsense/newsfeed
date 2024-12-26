@@ -37,7 +37,11 @@ public class FollowRelationship extends BaseEntity {
         status = Status.ACTIVE;
     }
 
-    // 팔로우 상태 변경 메서드
+    // status active
+    public void active() {
+        status = Status.ACTIVE;
+    }
+    // status inactive
     public void inactive() {
         status = Status.INACTIVE;
     }
