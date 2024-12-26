@@ -53,6 +53,9 @@ dependencies {
 
     // BCrypt Encoder (Spring Security 의존성 추가 없이 Encoder 사용할 때)
     implementation ("at.favre.lib:bcrypt:0.10.2")
+
+    // Swagger
+    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 }
 
 tasks.withType<Test> {
