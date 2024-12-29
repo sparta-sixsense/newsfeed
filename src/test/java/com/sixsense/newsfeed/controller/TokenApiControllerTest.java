@@ -1,7 +1,6 @@
 package com.sixsense.newsfeed.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sixsense.newsfeed.config.jwt.JwtProperties;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.CreateAccessTokenRequestDto;
@@ -17,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 
 import java.time.Duration;
 
@@ -41,8 +39,6 @@ class TokenApiControllerTest {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    JwtProperties jwtProperties;
     @Autowired
     private TokenProvider tokenProvider;
 

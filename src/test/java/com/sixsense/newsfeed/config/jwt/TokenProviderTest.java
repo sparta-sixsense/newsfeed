@@ -67,7 +67,7 @@ class TokenProviderTest {
                 .createToken(jwtProperties);
 
         // when
-        boolean result = tokenProvider.isExpiredToken(token);
+        boolean result = tokenProvider.isValidToken(token);
 
         // then
         assertThat(result).isFalse();
@@ -83,10 +83,10 @@ class TokenProviderTest {
                 .createToken(jwtProperties);
 
         // when
-        boolean result = tokenProvider.isExpiredToken(token);
+        boolean result = tokenProvider.isValidToken(token);
 
         // then
-        assertThat(result).isFalse();
+        assertThat(result).isTrue();
     }
 
     @DisplayName("getUserId(): token으로 userId 가져오기")

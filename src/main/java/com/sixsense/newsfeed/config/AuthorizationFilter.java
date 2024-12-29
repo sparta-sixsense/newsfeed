@@ -71,7 +71,7 @@ public class AuthorizationFilter implements Filter {
             return false;
         }
 
-        if (tokenProvider.isExpiredToken(accessToken)) {
+        if (tokenProvider.isValidToken(accessToken) == false) {
             log.error("Invalid JWT token. Sending error response.");
             sendErrorResponse(response, ErrorCode.INVALID_TOKEN, ErrorCode.INVALID_TOKEN.getMessage());
             return false;

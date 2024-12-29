@@ -1,20 +1,15 @@
 package com.sixsense.newsfeed.config.jwt;
 
 import com.sixsense.newsfeed.domain.User;
-import com.sixsense.newsfeed.constant.Token;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Date;
 
-@Slf4j
+import static com.sixsense.newsfeed.constant.Token.BEARER_PREFIX;
+
 @Service
 @RequiredArgsConstructor
 public class TokenProvider {
@@ -38,27 +33,22 @@ public class TokenProvider {
                 .compact();
     }
 
-    public boolean isValidToken(String token) {
+    public boolean isValidToken(String rawToken) {
         try {
+            String extractedToken = extractToken(rawToken);
+
             Jwts.parser()
                     .setSigningKey(jwtProperties.getSecretKey()) // 비밀키로 복호화
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(extractedToken);
+        } catch (ExpiredJwtException e) { // 디버깅 편의를 위해, 여러개 예외로 분기
+            return false;
+        } catch (MalformedJwtException e) {
+            return false;
         } catch (Exception e) {
             return false;
         }
 
         return true;
-    }
-
-    public boolean isExpiredToken(String token) {
-        if (isValidToken(token) == false) {
-            return true;
-        }
-
-        Date now = new Date();
-        return getClaims(token)
-                .getExpiration()
-                .before(now);
     }
 
     public Long getUserId(String token) {
@@ -67,20 +57,17 @@ public class TokenProvider {
     }
 
     private Claims getClaims(String token) {
-        //String testToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzaXhzZW5zZUBnbWFpbC5jb20iLCJpYXQiOjE3MzUwMzk0NDEsImV4cCI6MTczNTA0NjY0MSwic3ViIjoidGVzdDFAZ21haWwuY29tIiwiaWQiOjF9.KGPwI0Ak0TaXLJjxJCfpTmer8_-0naPatEfB0XWKXSc";
+        String extractedToken = extractToken(token);
+
         return Jwts.parser()
                 .setSigningKey(jwtProperties.getSecretKey())
-                .parseClaimsJws(token) // 토큰값만 들어가야 하는데 bearer 라는 문자열도 같이 들어감
+                .parseClaimsJws(extractedToken)
                 .getBody();
     }
 
-    // 요청 헤더에서 토큰 추출
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(Token.AUTHORIZATION_HEADER); // 상수 사용
-        if (bearerToken != null && bearerToken.startsWith(Token.BEARER_PREFIX)) {
-            return bearerToken.substring(Token.BEARER_PREFIX.length()); // 접두어 제거
-        }
-        return null;
+    private String extractToken(String rawToken) { // "Bearer " 접두사 제거
+        // Bearer 접두사가 없더라도 우선 허용.
+        return rawToken.startsWith(BEARER_PREFIX) ?
+                rawToken.substring(BEARER_PREFIX.length()) : rawToken;
     }
 }
-
