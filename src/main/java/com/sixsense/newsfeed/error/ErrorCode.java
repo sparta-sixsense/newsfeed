@@ -24,6 +24,9 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "TOKEN_NOT_FOUND", "존재하지 않는 토큰입니다"),
 
+    // Follow
+    FOLLOWING_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLLOWING_NOT_FOUND", "존재하는 않는 팔로잉 관계입니다."),
+    FOLLOWING_CONFLICT(HttpStatus.CONFLICT, "FOLLOWING_CONFLICT", "이미 팔로잉 상태입니다."),
     ;
 
     private final HttpStatus status;

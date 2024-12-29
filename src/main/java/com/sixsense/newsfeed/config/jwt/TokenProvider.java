@@ -1,15 +1,14 @@
 package com.sixsense.newsfeed.config.jwt;
 
 import com.sixsense.newsfeed.domain.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Date;
+
+import static com.sixsense.newsfeed.constant.Token.BEARER_PREFIX;
 
 @Service
 @RequiredArgsConstructor
@@ -34,27 +33,22 @@ public class TokenProvider {
                 .compact();
     }
 
-    public boolean isValidToken(String token) {
+    public boolean isValidToken(String rawToken) {
         try {
+            String extractedToken = extractToken(rawToken);
+
             Jwts.parser()
                     .setSigningKey(jwtProperties.getSecretKey()) // 비밀키로 복호화
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(extractedToken);
+        } catch (ExpiredJwtException e) { // 디버깅 편의를 위해, 여러개 예외로 분기
+            return false;
+        } catch (MalformedJwtException e) {
+            return false;
         } catch (Exception e) {
             return false;
         }
 
         return true;
-    }
-
-    public boolean isExpiredToken(String token) {
-        if (!isValidToken(token)) {
-            return false;
-        }
-
-        Date now = new Date();
-        return getClaims(token)
-                .getExpiration()
-                .before(now);
     }
 
     public Long getUserId(String token) {
@@ -63,9 +57,17 @@ public class TokenProvider {
     }
 
     private Claims getClaims(String token) {
+        String extractedToken = extractToken(token);
+
         return Jwts.parser()
                 .setSigningKey(jwtProperties.getSecretKey())
-                .parseClaimsJws(token)
+                .parseClaimsJws(extractedToken)
                 .getBody();
+    }
+
+    private String extractToken(String rawToken) { // "Bearer " 접두사 제거
+        // Bearer 접두사가 없더라도 우선 허용.
+        return rawToken.startsWith(BEARER_PREFIX) ?
+                rawToken.substring(BEARER_PREFIX.length()) : rawToken;
     }
 }

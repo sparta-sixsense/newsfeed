@@ -24,7 +24,7 @@ public class FollowManagementController {
                                                                  @PathVariable Long accepterId,
                                                                  @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
 
-        CreateFollowingResponseDto responseDto = followManagementService.follow(requesterId, accepterId, accessToken);
+        CreateFollowingResponseDto responseDto = followManagementService.follow(accessToken, requesterId, accepterId);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(responseDto);
     }
@@ -54,7 +54,7 @@ public class FollowManagementController {
                                                 @PathVariable Long accepterId,
                                                 @RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
 
-        followManagementService.deleteFollowing(requesterId, accepterId, accessToken);
+        followManagementService.deleteFollowing(accessToken, requesterId, accepterId);
         return ResponseEntity.ok()
                 .build();
     }

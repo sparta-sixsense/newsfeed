@@ -32,7 +32,7 @@ public class AuthorizationFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) httpRequest;
         HttpServletResponse response = (HttpServletResponse) httpResponse;
 
-        log.info("Processing authorization for request: {}", request.getRequestURI());
+        log.debug("Processing authorization for request: {}", request.getRequestURI());
 
         if (!isWhiteListRequest(request)) {
             if (!validateToken(request, response)) {
@@ -69,7 +69,7 @@ public class AuthorizationFilter implements Filter {
             return false;
         }
 
-        if (tokenProvider.isExpiredToken(accessToken)) {
+        if (tokenProvider.isValidToken(accessToken) == false) {
             log.error("Invalid JWT token. Sending error response.");
             sendErrorResponse(response, ErrorCode.INVALID_TOKEN, ErrorCode.INVALID_TOKEN.getMessage());
             return false;

@@ -1,7 +1,7 @@
 package com.sixsense.newsfeed.dto;
 
 
-import com.sixsense.newsfeed.domain.FollowRelationship;
+import com.sixsense.newsfeed.domain.FollowRelation;
 
 public record GetFollowingResponse(
         Long id,
@@ -12,15 +12,15 @@ public record GetFollowingResponse(
         String followeeAddress,
         Integer followeeAge
 ) {
-    public GetFollowingResponse(FollowRelationship followRelationship) {
+    public GetFollowingResponse(FollowRelation followRelation) {
         this(
-                followRelationship.getId(),
-                followRelationship.getAccepter().getId(),
-                followRelationship.getAccepter().getName(),
-                followRelationship.getAccepter().getEmail(),
-                followRelationship.getAccepter().getProfileImgUrl(),
-                followRelationship.getAccepter().getAddress(),
-                followRelationship.getAccepter().getAge()
+                followRelation.getId(),
+                followRelation.getAccepter().getId(),
+                followRelation.getAccepter().getName(),
+                followRelation.getAccepter().getEmail(),
+                followRelation.getAccepter().getProfileImgUrl(),
+                followRelation.getAccepter().getAddress(),
+                followRelation.getAccepter().getAge()
         );
     }
 }

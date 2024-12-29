@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     /**
-    이 예외는 validation 전용 예외라서 비즈니스 예외 처리 클래스에 있는 게 조금 안 어울리기는 하지만
-     크기가 커지면 따로 빼서 관리하면 될 듯
+     * 이 예외는 validation 전용 예외라서 비즈니스 예외 처리 클래스에 있는 게 조금 안 어울리기는 하지만
+     * 크기가 커지면 따로 빼서 관리하면 될 듯
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {

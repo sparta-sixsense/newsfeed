@@ -1,7 +1,5 @@
 package com.sixsense.newsfeed.service;
 
-import com.sixsense.newsfeed.config.jwt.JwtFactory;
-import com.sixsense.newsfeed.config.jwt.JwtProperties;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.constant.Token;
 import com.sixsense.newsfeed.domain.Status;
@@ -26,7 +24,8 @@ import java.time.Duration;
 
 import static com.sixsense.newsfeed.error.ErrorCode.AUTHENTICATION_FAILURE;
 import static com.sixsense.newsfeed.error.ErrorCode.USER_NOT_FOUND;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class UserServiceTest {
@@ -36,9 +35,6 @@ class UserServiceTest {
 
     @Autowired
     UserService userService;
-
-    @Autowired
-    JwtProperties jwtProperties;
 
     @Autowired
     TokenProvider tokenProvider;
@@ -55,8 +51,9 @@ class UserServiceTest {
 
     @BeforeEach
     void beforeEachTest() {
-        userRepository.deleteAll();
+        userRepository.deleteAllInBatch();
     }
+
 
     @DisplayName("회원가입시 동일 이메일이 있으면 실패")
     @Test
@@ -125,7 +122,7 @@ class UserServiceTest {
     void updateUserInfo() {
         // given
         User savedUser = userRepository.save(testUser);
-        String accessToken = tokenProvider.generateToken(savedUser, Duration.ofDays(1));
+        String accessToken = Token.BEARER_PREFIX + tokenProvider.generateToken(savedUser, Duration.ofDays(1));
 
         // when
         UpdateUserRequestDto requestDto = new UpdateUserRequestDto("1234",

@@ -17,7 +17,8 @@ public class TokenService {
 
     public String createNewAccessToken(String expiredAccessToken, String refreshToken) {
         // 토큰 유효성 검사
-        if (!tokenProvider.isValidToken(expiredAccessToken) || tokenProvider.isExpiredToken(refreshToken)) {
+        if (tokenProvider.isValidToken(expiredAccessToken) == false
+                || tokenProvider.isValidToken(refreshToken) == false) {
             throw new InvalidTokenException();
         }
 

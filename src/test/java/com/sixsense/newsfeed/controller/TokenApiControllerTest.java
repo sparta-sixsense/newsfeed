@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-
 import java.time.Duration;
 
 import static com.sixsense.newsfeed.constant.Token.AUTHORIZATION_HEADER;
@@ -80,6 +79,5 @@ class TokenApiControllerTest {
 
         // then
         result.andExpect(status().isCreated());
-
     }
 }
