@@ -14,7 +14,12 @@ java {
 }
 
 configurations {
-    compileOnly {
+//    compileOnly {
+//        extendsFrom(configurations.annotationProcessor.get())
+//    }
+
+    // QueryDSL 전용 configuration 정의
+    val querydsl by creating {
         extendsFrom(configurations.annotationProcessor.get())
     }
 }
@@ -24,11 +29,21 @@ repositories {
 }
 
 dependencies {
-
     // Basic
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    // QueryDSL (아래 의존성 각각 어떤 의존성들이지 파악)
+    implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
+    annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
+    testImplementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
+    testAnnotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
+    testAnnotationProcessor("jakarta.annotation:jakarta.annotation-api")
+    testAnnotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     // Lombok
     compileOnly("org.projectlombok:lombok")
@@ -42,20 +57,30 @@ dependencies {
 
     // DB connector
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
-    runtimeOnly("mysql:mysql-connector-java:8.0.32") // '8.0.40'으로 맞추면 에러...
+    runtimeOnly("mysql:mysql-connector-java:8.0.32")
 
     // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // JWT
-    implementation ("io.jsonwebtoken:jjwt:0.9.1") // Java JWT library
-    implementation ("javax.xml.bind:jaxb-api:2.3.1") // XML document와 Java 객체 간 매핑 자동화
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
+    implementation("javax.xml.bind:jaxb-api:2.3.1")
 
-    // BCrypt Encoder (Spring Security 의존성 추가 없이 Encoder 사용할 때)
-    implementation ("at.favre.lib:bcrypt:0.10.2")
+    // BCrypt Encoder
+    implementation("at.favre.lib:bcrypt:0.10.2")
 
     // Swagger
-    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+}
+
+tasks.named<JavaCompile>("compileJava") {
+    options.generatedSourceOutputDirectory.set(layout.buildDirectory.dir("generated/querydsl"))
+}
+
+sourceSets {
+    main {
+        java.srcDir(layout.buildDirectory.dir("/generated/querydsl"))
+    }
 }
 
 tasks.withType<Test> {
