@@ -16,14 +16,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.List;
 
 import static com.sixsense.newsfeed.constant.Token.BEARER_PREFIX;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -190,5 +191,24 @@ class FollowManagementServiceTest {
         followManagementService.deleteFollowing(requesterAccessToken, user1.getId(), user2.getId());
         List<GetFollowingResponse> followings2 = followManagementService.getFollowings(user1.getId());
         assertThat(followings2.size()).isZero();
+    }
+
+    @Test
+    void pagingTest() {
+        // given
+        String requesterAccessToken = tokenProvider.generateToken(user1, Duration.ofHours(1));
+
+        // when
+        followManagementService.follow(requesterAccessToken, user1.getId(), user2.getId());
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<FollowRelation> result = followRelationRepository.searchSimplePage(pageRequest);
+
+        // then
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getContent()).extracting("id").containsExactly(1L);
+        assertThat(result.getContent()).extracting("requeer.id").containsExactly(1L);
+        assertThat(result.getContent()).extracting("accepter.id").containsExactly(2L);
     }
 }

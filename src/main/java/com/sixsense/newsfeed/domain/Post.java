@@ -2,6 +2,8 @@ package com.sixsense.newsfeed.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @ToString
 @Entity
@@ -20,10 +22,9 @@ public class Post extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    //    @JoinColumn(name = "user_id", nullable = false)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-//    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Column(name = "status", nullable = false)
