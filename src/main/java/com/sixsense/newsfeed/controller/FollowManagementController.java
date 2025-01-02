@@ -1,7 +1,7 @@
 package com.sixsense.newsfeed.controller;
 
 import com.sixsense.newsfeed.dto.CreateFollowingResponseDto;
-import com.sixsense.newsfeed.dto.GetFollowingResponse;
+import com.sixsense.newsfeed.dto.GetFollowingResponseDto;
 import com.sixsense.newsfeed.service.FollowManagementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,9 +38,9 @@ public class FollowManagementController {
 
     // 특정 유저가 팔로우하고 있는 팔로워 목록 가져오기
     @GetMapping("/api/users/{requesterId}/followings")
-    public ResponseEntity<List<GetFollowingResponse>> getFollowingUsers(@PathVariable Long requesterId) {
+    public ResponseEntity<List<GetFollowingResponseDto>> getFollowingUsers(@PathVariable Long requesterId) {
 
-        List<GetFollowingResponse> followings = followManagementService.getFollowings(requesterId);
+        List<GetFollowingResponseDto> followings = followManagementService.getFollowings(requesterId);
         return ResponseEntity.ok()
                 .body(followings);
     }

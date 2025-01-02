@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,7 +20,7 @@ public class GlobalExceptionHandler {
      * 크기가 커지면 따로 빼서 관리하면 될 듯
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException", e);
 
         // 여기다 이런 로직을 넣는 게 맞는 걸까. 다소 무겁지는 않는가.
@@ -49,14 +50,14 @@ public class GlobalExceptionHandler {
         return createErrorResponseEntity(e.getErrorCode());
     }
 
+    // 500 서버 에러 정도만 여기서 걸림
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+    protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         e.printStackTrace();
         log.error("Exception", e);
         return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    // 500 서버 에러 정도만 여기서 걸림
     private ResponseEntity<ErrorResponse> createErrorResponseEntity(ErrorCode errorCode) {
         return new ResponseEntity<>(ErrorResponse.of(errorCode), errorCode.getStatus());
     }

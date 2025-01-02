@@ -5,9 +5,10 @@ import com.sixsense.newsfeed.domain.FollowRelation;
 import com.sixsense.newsfeed.domain.Status;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.CreateFollowingResponseDto;
-import com.sixsense.newsfeed.dto.GetFollowingResponse;
-import com.sixsense.newsfeed.error.exception.FollowingConflictException;
-import com.sixsense.newsfeed.error.exception.FollowingNotFoundException;
+import com.sixsense.newsfeed.dto.GetFollowingResponseDto;
+import com.sixsense.newsfeed.error.ErrorCode;
+import com.sixsense.newsfeed.error.exception.base.EntityAlreadyExistsException;
+import com.sixsense.newsfeed.error.exception.base.NotFoundException;
 import com.sixsense.newsfeed.repository.FollowRelationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class FollowManagementService {
 
         // 현재 팔로잉 중인지 확인
         if (isFollowingNow(requesterId, accepterId)) {
-            throw new FollowingConflictException();
+            throw new EntityAlreadyExistsException(ErrorCode.FOLLOWING_ALREADY_EXISTS);
         }
 
         // 팔로우 신청
@@ -49,7 +50,7 @@ public class FollowManagementService {
     }
 
     // 특정 유저가 팔로잉 하고 있는 'following' 목록 가져오기
-    public List<GetFollowingResponse> getFollowings(Long requesterId) {
+    public List<GetFollowingResponseDto> getFollowings(Long requesterId) {
 
         // requester가 Active 상태일 때만 팔로잉 목록 확인 가능
         User requester = userService.getById(requesterId);
@@ -58,7 +59,7 @@ public class FollowManagementService {
         return followRelationRepository.findAllByRequesterWithAccepter(requesterId)
                 .stream()
                 .filter(fr -> fr.getAccepter().getStatus() != Status.DELETED)
-                .map(GetFollowingResponse::new)
+                .map(GetFollowingResponseDto::new)
                 .toList();
     }
 
@@ -77,7 +78,7 @@ public class FollowManagementService {
         userService.validateIsActiveUser(requester);
 
         FollowRelation findFollowRelation = followRelationRepository.findByRequesterIdAndAccepterId(requester.getId(), accepter.getId())
-                .orElseThrow(FollowingNotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.FOLLOWING_NOT_FOUND));
 
         // 팔로잉 관계 삭제
         followRelationRepository.delete(findFollowRelation);

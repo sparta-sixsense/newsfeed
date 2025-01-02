@@ -3,7 +3,7 @@ package com.sixsense.newsfeed.dto;
 
 import com.sixsense.newsfeed.domain.FollowRelation;
 
-public record GetFollowingResponse(
+public record GetFollowingResponseDto(
         Long id,
         Long followeeId,
         String followeeName,
@@ -12,7 +12,7 @@ public record GetFollowingResponse(
         String followeeAddress,
         Integer followeeAge
 ) {
-    public GetFollowingResponse(FollowRelation followRelation) {
+    public GetFollowingResponseDto(FollowRelation followRelation) {
         this(
                 followRelation.getId(),
                 followRelation.getAccepter().getId(),

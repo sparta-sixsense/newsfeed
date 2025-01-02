@@ -10,9 +10,9 @@ import com.sixsense.newsfeed.dto.UpdateUserRequestDto;
 import com.sixsense.newsfeed.dto.UpdateUserResponseDto;
 import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.error.exception.AuthenticationException;
-import com.sixsense.newsfeed.error.exception.UserConflictException;
 import com.sixsense.newsfeed.error.exception.UserInactiveOrDeletedException;
-import com.sixsense.newsfeed.error.exception.UserNotFoundException;
+import com.sixsense.newsfeed.error.exception.base.EntityAlreadyExistsException;
+import com.sixsense.newsfeed.error.exception.base.NotFoundException;
 import com.sixsense.newsfeed.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,8 +66,8 @@ class UserServiceTest {
         assertThatThrownBy(() -> {
             userService.save(requestDto);
         })
-                .isInstanceOf(UserConflictException.class)
-                .hasMessageContaining(ErrorCode.USER_CONFLICT.getMessage());
+                .isInstanceOf(EntityAlreadyExistsException.class)
+                .hasMessageContaining(ErrorCode.USER_ALREADY_EXISTS.getMessage());
     }
 
     @DisplayName("회원가입 성공")
@@ -97,7 +97,7 @@ class UserServiceTest {
         // when & then
         assertThatThrownBy(() -> {
             userService.authenticate(requestDto);
-        }).isInstanceOf(UserNotFoundException.class)
+        }).isInstanceOf(NotFoundException.class)
                 .hasMessageContaining(USER_NOT_FOUND.getMessage());
     }
 

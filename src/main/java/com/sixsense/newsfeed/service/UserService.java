@@ -5,7 +5,11 @@ import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.Status;
 import com.sixsense.newsfeed.domain.User;
 import com.sixsense.newsfeed.dto.*;
+import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.error.exception.*;
+import com.sixsense.newsfeed.error.exception.base.AccessDeniedException;
+import com.sixsense.newsfeed.error.exception.base.EntityAlreadyExistsException;
+import com.sixsense.newsfeed.error.exception.base.NotFoundException;
 import com.sixsense.newsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +30,7 @@ public class UserService {
 
     public User getById(Long id) {
         User findUser = userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         // 활성 유저인지 확인 (여기서 검증하면 'getById()'를 호출하는 쪽에서는 헷갈려서 한 번 더 검증할 수 있을 듯
         validateIsActiveUser(findUser);
@@ -35,7 +39,7 @@ public class UserService {
 
     public User getByEmail(String email) {
         User findUser = userRepository.findByEmail(email)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         // 활성 유저인지 확인
         validateIsActiveUser(findUser);
@@ -49,7 +53,7 @@ public class UserService {
         userRepository.findByEmail(requestDto.email())
                 .ifPresent(user -> {
                     // 삭제되거나, 휴먼 상태인 계정일 경우에도 새로 가입하는 방식으로는 계정 활성화가 안 되게끔.
-                    throw new UserConflictException();
+                    throw new EntityAlreadyExistsException(ErrorCode.USER_ALREADY_EXISTS);
                 });
 
         String encodedPassword = passwordEncoder.encode(requestDto.password());
@@ -102,7 +106,7 @@ public class UserService {
     public void validateIsAccessible(Long id, String accessToken) {
         Long userId = tokenProvider.getUserId(accessToken);
         if (!id.equals(userId)) {
-            throw new UserAccessDeniedException();
+            throw new AccessDeniedException(ErrorCode.USER_ACCESS_DENIED);
         }
     }
 

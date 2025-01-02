@@ -480,7 +480,7 @@ public class QuerydslBasicTest {
         QUser subUser = new QUser("subUser");
 
         List<UserResponse> result = queryFactory
-                .select(Projections.fields(UserResponse.class, // getter/setter 무시
+                .select(Projections.constructor(UserResponse.class, // getter/setter 무시
                         user.id.as("id"), // 프로퍼티 명이 다를 때는 맞춰줘야 함. (예시)
                         user.name,
                         user.email,

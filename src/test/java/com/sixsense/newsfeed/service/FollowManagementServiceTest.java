@@ -3,7 +3,7 @@ package com.sixsense.newsfeed.service;
 import com.sixsense.newsfeed.config.jwt.TokenProvider;
 import com.sixsense.newsfeed.domain.FollowRelation;
 import com.sixsense.newsfeed.domain.User;
-import com.sixsense.newsfeed.dto.GetFollowingResponse;
+import com.sixsense.newsfeed.dto.GetFollowingResponseDto;
 import com.sixsense.newsfeed.error.ErrorCode;
 import com.sixsense.newsfeed.error.exception.UserInactiveOrDeletedException;
 import com.sixsense.newsfeed.repository.FollowRelationRepository;
@@ -84,6 +84,7 @@ class FollowManagementServiceTest {
     @AfterEach
     void afterAll() {
         followRelationRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @DisplayName("유저 두 개가 모두 팔로우 상태면 팔로우 신청 성공")
@@ -140,7 +141,7 @@ class FollowManagementServiceTest {
         // when
         followManagementService.follow(requesterAccessToken, user1.getId(), user2.getId());
         followManagementService.follow(requesterAccessToken, user1.getId(), user3.getId());
-        List<GetFollowingResponse> followings = followManagementService.getFollowings(user1.getId());
+        List<GetFollowingResponseDto> followings = followManagementService.getFollowings(user1.getId());
 
         // then
         assertThat(followings.size()).isEqualTo(2);
@@ -169,7 +170,7 @@ class FollowManagementServiceTest {
         user2.deleteMe();
         log.info("user2 상태 변경 후");
 
-        List<GetFollowingResponse> followings = followManagementService.getFollowings(user1.getId());
+        List<GetFollowingResponseDto> followings = followManagementService.getFollowings(user1.getId());
         log.info("Followings 조회 완료");
 
         // then
@@ -185,11 +186,11 @@ class FollowManagementServiceTest {
 
         // when & then
         followManagementService.follow(requesterAccessToken, user1.getId(), user2.getId());
-        List<GetFollowingResponse> followings = followManagementService.getFollowings(user1.getId());
+        List<GetFollowingResponseDto> followings = followManagementService.getFollowings(user1.getId());
         assertThat(followings.size()).isEqualTo(1);
 
         followManagementService.deleteFollowing(requesterAccessToken, user1.getId(), user2.getId());
-        List<GetFollowingResponse> followings2 = followManagementService.getFollowings(user1.getId());
+        List<GetFollowingResponseDto> followings2 = followManagementService.getFollowings(user1.getId());
         assertThat(followings2.size()).isZero();
     }
 
@@ -208,7 +209,7 @@ class FollowManagementServiceTest {
         assertThat(result.getSize()).isEqualTo(10);
         assertThat(result.getTotalPages()).isEqualTo(1);
         assertThat(result.getContent()).extracting("id").containsExactly(1L);
-        assertThat(result.getContent()).extracting("requeer.id").containsExactly(1L);
+        assertThat(result.getContent()).extracting("requester.id").containsExactly(1L);
         assertThat(result.getContent()).extracting("accepter.id").containsExactly(2L);
     }
 }
